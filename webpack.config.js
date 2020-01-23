@@ -61,7 +61,7 @@ const config = (name) => {
     );
   }
   if (name === 'dashboard') {
-    plugins.push(    
+    plugins.push(
       new VuetifyLoaderPlugin()
     );
   }
@@ -69,6 +69,7 @@ const config = (name) => {
   return {
     context: path.resolve(__dirname, `src/${name}`),
     mode: isProd ? 'production' : 'development',
+    stats: 'errors-only',
     target: 'web',
     // devtool: isProd ? undefined : 'cheap-source-map',
     entry,
