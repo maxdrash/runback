@@ -73,19 +73,19 @@
     "compatibleRange": "^1.5.0",
     "dashboardPanels": [
       {
-        "name": "1. Home",
+        "name": "0. About",
         "title": "",
-        "file": "home.html",
+        "file": "about.html",
         "fullbleed": true
       },
       {
-        "name": "2. Scoreboard",
+        "name": "1. Scoreboard",
         "title": "",
         "file": "scoreboard.html",
         "fullbleed": true
       },
       {
-        "name": "3. Player Management",
+        "name": "2. Player Management",
         "title": "",
         "file": "player-management.html",
         "fullbleed": true

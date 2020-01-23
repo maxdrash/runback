@@ -21,7 +21,7 @@
 
                       <v-row align="center" justify="center">
                         <div class="text-center">
-                          Version {{ version }}
+                          Version {{ version }}, {{ foo }}
                         </div>
                       </v-row>
 
@@ -53,7 +53,6 @@
                       </span>
                     </v-col>
 
-
                   </v-row>
                 </v-col>
               </v-row>
@@ -71,10 +70,18 @@
 
 import "reflect-metadata"
 import { Vue, Component, Prop } from "vue-property-decorator"
+import { State, Mutation, Action } from "vuex-class";
+
 const VERSION = require('../../../package.json').version;
 
 @Component
 export default class App extends Vue {
+  @State("foo") localFoo!: Foo
+
+  get foo(): string {
+    return this.localFoo.bar
+  }
+
   version: string = VERSION
   github: string = "https://github.com/opeik/runback"
   twitter: string = "https://twitter.com/iamopeik"

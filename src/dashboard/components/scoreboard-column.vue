@@ -87,6 +87,7 @@
 <script lang="ts">
 import "reflect-metadata"
 import { Vue, Component, Prop, Provide } from "vue-property-decorator"
+import { State, Mutation, Action } from 'vuex-class';
 import COUNTRIES from "country-json/src/country-by-abbreviation.json"
 
 function clamp(n: number, min: number, max: number) {
@@ -119,5 +120,6 @@ export default class ScoreboardColumn extends Vue {
   updateScore(wasPlus: boolean) {
     this.score = clamp(this.score + (wasPlus ? 1 : -1), this.MIN, this.MAX)
   }
+
 }
 </script>

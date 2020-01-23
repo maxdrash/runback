@@ -3,7 +3,7 @@
 import Vue from "vue"
 import vuetify from "../_misc/vuetify"
 import App from "./main.vue"
-import waitForReplicants from "../store"
+import waitForReplicants from "./store"
 import Panel from "../components/panel.vue"
 import PlayerCard from "../components/player-card.vue"
 
