@@ -70,9 +70,11 @@
 
 import "reflect-metadata"
 import { Vue, Component, Prop } from "vue-property-decorator"
-import { State, Mutation, Action } from "vuex-class";
+import { State, Mutation, Action } from "vuex-class"
 
-const VERSION = require('../../../package.json').version;
+import { Foo } from "schemas";
+
+const VERSION = require("../../../package.json").version
 
 @Component
 export default class App extends Vue {

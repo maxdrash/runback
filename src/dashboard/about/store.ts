@@ -15,7 +15,9 @@ const reps: {
   foo: nodecg.Replicant('foo'),
 };
 
-const defaultFoo: Foo = { bar: "" };
+const defaultFoo: Foo = {
+  bar: ""
+};
 
 // Types for mutations below
 export type ExampleMutation = (arg: any) => void;
