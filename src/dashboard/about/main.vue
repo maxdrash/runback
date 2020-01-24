@@ -7,7 +7,7 @@
             <v-card-text class="pa-6">
               <v-row>
                 <v-col cols="12">
-                  <v-img class="ma-4" :src="require('./img/logo.svg')" aspect-ratio="3.9699"></v-img>
+                  <img class="ma-4" src="./img/logo.svg">
 
                   <v-divider class="mt-10"></v-divider>
                 </v-col>
@@ -72,7 +72,7 @@ import "reflect-metadata"
 import { Vue, Component, Prop } from "vue-property-decorator"
 import { State, Mutation, Action } from "vuex-class"
 
-import { Foo } from "schemas";
+import { Foo } from "../../../schemas/foo";
 
 const VERSION = require("../../../package.json").version
 
@@ -88,4 +88,5 @@ export default class App extends Vue {
   github: string = "https://github.com/opeik/runback"
   twitter: string = "https://twitter.com/iamopeik"
 }
+
 </script>

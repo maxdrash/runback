@@ -1,9 +1,9 @@
 {
-  "bracketSideList": [
+  "sideList": [
     { "text": "Winners", "value": 1 },
     { "text": "Losers", "value": 2 }
   ],
-  "bracketProgressList": [
+  "progressList": [
     { "text": "Pools", "value": 1 },
     { "text": "Top 128", "value": 2 },
     { "text": "Top 96", "value": 3 },
@@ -18,7 +18,7 @@
     { "text": "Final", "value": 12 },
     { "text": "Grand Finals", "value": 13 }
   ],
-  "finalsProgressList": [
+  "finalsList": [
     { "text": "Winners — Losers", "value": 1 },
     { "text": "Losers — Winners", "value": 2 },
     { "text": "Losers — Losers (Reset)", "value": 3 }

@@ -4,8 +4,9 @@ import Vue from "vue"
 import vuetify from "../_misc/vuetify"
 import App from "./main.vue"
 import waitForReplicants from "./store"
+
 import Panel from "../components/panel.vue"
-import PlayerCard from "../components/player-card.vue"
+import PlayerCard from "./components/player-card.vue"
 
 Vue.component("panel", Panel)
 Vue.component("player-card", PlayerCard);

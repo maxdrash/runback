@@ -81,6 +81,8 @@ const config = (name) => {
       extensions: ['.js', '.ts', '.tsx', '.json'],
       alias: {
         vue: 'vue/dist/vue.esm.js',
+        data: path.resolve(__dirname, '../src/data/'),
+        '@': path.resolve(__dirname, `src/`),
       },
     },
     module: {
@@ -148,6 +150,13 @@ const config = (name) => {
           options: {
             transpileOnly: true, // ForkTsCheckerWebpackPlugin will do type checking
             appendTsSuffixTo: [/\.vue$/],
+          },
+        },
+        {
+          test: /\.d.ts?$/,
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true, // ForkTsCheckerWebpackPlugin will do type checking
           },
         },
       ],

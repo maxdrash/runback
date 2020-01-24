@@ -8,6 +8,5 @@
             "default" : "pls work"
         }
     },
-    "required": ["bar"],
-    "additionalProperties": false
+    "required": ["bar"]
 }

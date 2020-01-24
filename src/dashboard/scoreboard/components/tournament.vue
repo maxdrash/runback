@@ -23,7 +23,7 @@
           ></v-autocomplete>
 
           <v-autocomplete
-            :items="finalsProgressList"
+            :items="finalsList"
             :rules="finalsProgressRules"
             v-model="finalsProgress"
             item-text="text"
@@ -62,7 +62,7 @@
 <script lang="ts">
 import "reflect-metadata"
 import { Vue, Component, Prop, Provide } from "vue-property-decorator"
-import RULES from "../../data/rules.json"
+const BRACKET = require("@/rules/bracket.json")
 
 @Component
 export default class Tournament extends Vue {
@@ -74,9 +74,9 @@ export default class Tournament extends Vue {
   side: number = 1;
   finalsProgress: number = 1;
 
-  progressList: Array<{name: string, value: number}> = RULES.bracketProgressList
-  sideList: Array<{name: string, value: number}> = RULES.bracketSideList
-  finalsProgressList: Array<{name: string, value: number}> = RULES.finalsProgressList
+  progressList: Array<{name: string, value: number}> = BRACKET.progressList
+  sideList: Array<{name: string, value: number}> = BRACKET.sideList
+  finalsList: Array<{name: string, value: number}> = BRACKET.finalsList
 
   progressRules: Array<Function> = [
     (v: number) => !!v || 'Tournament progress is required'
