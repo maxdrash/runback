@@ -72,6 +72,8 @@ import "reflect-metadata"
 import { Vue, Component, Prop } from "vue-property-decorator"
 import { State, Mutation, Action } from "vuex-class"
 
+import { Foo } from "schemas/foo";
+
 const VERSION = require("@/../package.json").version
 
 @Component
