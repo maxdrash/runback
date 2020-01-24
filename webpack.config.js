@@ -78,10 +78,10 @@ const config = (name) => {
       filename: 'js/[name].js',
     },
     resolve: {
-      extensions: ['.js', '.ts', '.tsx', '.json'],
+      extensions: ['.js', '.ts', '.tsx', '.json', '.vue'],
       alias: {
         vue: 'vue/dist/vue.esm.js',
-        data: path.resolve(__dirname, '../src/data/'),
+        schemas: path.resolve(__dirname, `schemas/`),
         '@': path.resolve(__dirname, `src/`),
       },
     },
