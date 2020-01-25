@@ -3,7 +3,7 @@
 
     <v-row align="center" justify="center">
       <div class="headline justify-center black--text">
-        {{ gamerTag !== "" ? gamerTag : "‎" }}
+        {{ displayName() }}
       </div>
     </v-row>
 
@@ -16,7 +16,7 @@
       </v-col>
       <v-col cols="4">
         <div class="display-3 text-center text-no-wrap black--text px-2">
-          {{ score }}
+          {{ scoreboardState[playerIndex].score }}
         </div>
       </v-col>
       <v-col cols="2" class="d-flex justify-center">
@@ -29,13 +29,27 @@
 
     <v-container>
       <v-autocomplete
-        :items="players"
+        v-model="scoreboardState[playerIndex].id"
+        :items="playersState"
+        item-text="gamerTag"
+        item-value="id"
         label="Player"
         outlined
-        v-model="player"
-        ></v-autocomplete>
+        @change="updateScoreboard(scoreboardState)"
+        >
+        <template v-slot:selection="{ item, index }">
+          {{ item.team ? item.team + " | " : "" }} {{ item.gamerTag }}
+        </template>
 
-        <v-row justify="center">
+        <template v-slot:item="{ item, index }">
+          {{ item.team ? item.team + " | " : "" }} {{ item.gamerTag }}
+        </template>
+
+      </v-autocomplete>
+
+      <v-row align="center" justify="center" class="my-n8">
+
+        <v-col cols="auto" align="center">
           <v-dialog v-model="dialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn v-on="on">Override</v-btn>
@@ -46,38 +60,57 @@
               </v-card-title>
               <v-card-text>
                 <v-container>
-
-                  <v-text-field
-                    v-model="gamerTag"
-                    :rules="gamerTagRules"
-                    label="Gamertag*"
-                    required
-                    ></v-text-field>
+                  <v-form
+                    ref="form"
+                    v-model="valid"
+                    >
+                    <v-text-field
+                      v-model="scoreboardState[playerIndex].gamerTagOverride"
+                      :rules="gamerTagRules"
+                      label="Gamertag*"
+                      required
+                      ></v-text-field>
 
                     <v-text-field
-                      v-model="team"
+                      v-model="scoreboardState[playerIndex].teamOverride"
                       label="Team"
                       ></v-text-field>
 
-                      <v-autocomplete
-                        :items="countries"
-                        :rules="countryRules"
-                        item-text="country"
-                        item-value="abbreviation"
-                        label="Country*"
-                        required
-                        ></v-autocomplete>
+                    <v-autocomplete
+                      v-model="scoreboardState[playerIndex].countryOverride"
+                      :items="countries"
+                      :rules="countryRules"
+                      item-text="country"
+                      item-value="abbreviation"
+                      label="Country*"
+                      required
+                      ></v-autocomplete>
+                    </v-form>
+                  </v-container>
+                  <small>*indicates required field</small>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="dialog = false">Cancel</v-btn>
+                  <v-btn
+                    :disabled="!valid"
+                    color="blue darken-1"
+                    text
+                    @click="saveDialog()">
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-col>
 
-                </v-container>
-                <small>*indicates required field</small>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="dialog = false">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="dialog = false">Save</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+          <v-col cols="auto" align="center">
+            <v-checkbox
+              class="mt-5 ml-n4"
+              v-model="scoreboardState[playerIndex].shouldOverride"
+              @change="updateScoreboard(scoreboardState)"
+              ></v-checkbox>
+          </v-col>
         </v-row>
 
     </v-container>
@@ -88,6 +121,11 @@
 import "reflect-metadata"
 import { Vue, Component, Prop, Provide } from "vue-property-decorator"
 import { State, Mutation, Action } from 'vuex-class';
+
+import { Players } from "schemas/players"
+import { Scoreboard } from "schemas/scoreboard"
+import { UpdateScoreboard } from "../store"
+
 import COUNTRIES from "country-json/src/country-by-abbreviation.json"
 
 function clamp(n: number, min: number, max: number) {
@@ -96,18 +134,26 @@ function clamp(n: number, min: number, max: number) {
 
 @Component
 export default class ScoreboardColumn extends Vue {
+  @State("players") playersState!: Players
+  @State("scoreboard") scoreboardState!: Scoreboard
+  @Mutation updateScoreboard!: UpdateScoreboard
+  @Prop() playerIndex!: number
+
   readonly MIN: number = 0
   readonly MAX: number = 99
 
-  player: string = ""
-  score: number = 0
-  gamerTag: string = "Player"
-  team: string = ""
-  country: string = "foo"
+  valid: boolean = true
   dialog: boolean = false
-  countries: Array<{name: string, abbreviation: string}> = COUNTRIES
 
-  players: Array<string> = ['Foo', 'Bar', 'Fizz', 'Buzz']
+  displayName() {
+    let player = this.playersState.find(e =>
+      e.id === this.scoreboardState[this.playerIndex].id
+    )!
+
+    return player.team ? player.team + " | " + player.name : player.name
+  }
+
+  countries: Array<{name: string, abbreviation: string}> = COUNTRIES
 
   gamerTagRules: Array<Function> = [
     (v: string) => !!v || 'Gamertag is required'
@@ -118,8 +164,14 @@ export default class ScoreboardColumn extends Vue {
   ]
 
   updateScore(wasPlus: boolean) {
-    this.score = clamp(this.score + (wasPlus ? 1 : -1), this.MIN, this.MAX)
+    this.scoreboardState[this.playerIndex].score =
+      clamp(this.scoreboardState[this.playerIndex].score + (wasPlus ? 1 : -1), this.MIN, this.MAX)
+    this.updateScoreboard(this.scoreboardState)
   }
 
+  saveDialog(): void {
+    this.dialog = false
+    this.updateScoreboard(this.scoreboardState)
+  }
 }
 </script>

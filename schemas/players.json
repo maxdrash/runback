@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "number"
+      },
+      "smashId": {
+        "type": "number"
+      },
+      "name": {
+        "type": "string"
+      },
+      "team": {
+        "type": "string"
+      },
+      "gamerTag": {
+        "type": "string"
+      },
+      "country": {
+        "type": "string"
+      },
+      "twitter": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "gamerTag",
+      "country"
+    ]
+  },
+  "default": [
+      {
+          "id": 1,
+          "name": "Name 1",
+          "gamerTag": "Gamertag 1",
+          "country": "AU"
+      },
+      {
+          "id": 2,
+          "name": "Name 2",
+          "gamerTag": "Gamertag 2",
+          "country": "AU"
+      }
+  ]
+}

@@ -5,6 +5,11 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface Foo {
-  bar: string;
-}
+export type Scoreboard = {
+  id: number;
+  score: number;
+  gamerTagOverride: string;
+  teamOverride: string;
+  countryOverride: string;
+  shouldOverride: boolean;
+}[];

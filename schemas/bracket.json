@@ -1,0 +1,34 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "side": {
+            "type": "number" ,
+            "default": 1
+        },
+        "progress": {
+            "type": "number" ,
+            "default": 1
+        },
+        "finals": {
+            "type": "number" ,
+            "default": 1
+        },
+        "customProgress": {
+            "type": "string" ,
+            "default": ""
+        },
+        "shouldOverride": {
+            "type": "boolean" ,
+            "default": false
+        }
+    },
+    "required": [
+        "side",
+        "progress",
+        "finals",
+        "customProgress",
+        "shouldOverride"
+    ]
+}

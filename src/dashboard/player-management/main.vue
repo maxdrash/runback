@@ -54,6 +54,10 @@
 
 import "reflect-metadata"
 import { Vue, Component, Prop } from "vue-property-decorator"
+import { State, Mutation, Action } from 'vuex-class';
+
+import { Players } from "schemas/players"
+import { UpdatePlayers } from "./store"
 
 @Component
 export default class App extends Vue {

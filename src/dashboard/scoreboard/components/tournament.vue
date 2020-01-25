@@ -4,55 +4,49 @@
 
       <v-autocomplete
         :items="progressList"
-        :rules="progressRules"
-        v-model="progress"
+        v-model="bracket.progress"
+        label="Tournament progress"
         item-text="text"
         item-value="value"
-        label="Tournament progress"
         required
+        @change="updateBracket(bracketState)"
         ></v-autocomplete>
 
         <v-autocomplete
           :items="sideList"
-          :rules="sideRules"
-          v-model="side"
+          v-model="bracket.side"
+          label="Bracket side"
           item-text="text"
           item-value="value"
-          label="Bracket side"
           required
+          @change="updateBracket(bracketState)"
           ></v-autocomplete>
 
           <v-autocomplete
             :items="finalsList"
-            :rules="finalsProgressRules"
-            v-model="finalsProgress"
+            v-model="bracket.finals"
+            label="Grand Finals progress"
             item-text="text"
             item-value="value"
-            label="Grand Finals progress"
             required
+            @change="updateBracket(bracketState)"
             ></v-autocomplete>
       <v-row class="my-n6">
         <v-col cols="9">
           <v-text-field
-            v-model="customProgress"
-            :rules="customProgressRules"
+            v-model="bracket.customProgress"
             label="Custom tournament progress"
             required
+            @change="updateBracket(bracketState)"
             ></v-text-field>
         </v-col>
         <v-col cols="3">
-          <v-checkbox v-model="progressOverridden" label="Override"></v-checkbox>
+          <v-checkbox
+            v-model="bracket.shouldOverride"
+            label="Override"
+            @change="updateBracket(bracketState)"
+            ></v-checkbox>
         </v-col>
-      </v-row>
-    </v-container>
-
-    <v-container>
-      <v-divider class="mb-6"></v-divider>
-      <v-row align="center" justify="center">
-        <v-btn color="primary" class="mx-2">
-          <v-icon left>mdi-check</v-icon>
-          Update
-        </v-btn>
       </v-row>
     </v-container>
 
@@ -62,36 +56,26 @@
 <script lang="ts">
 import "reflect-metadata"
 import { Vue, Component, Prop, Provide } from "vue-property-decorator"
-const BRACKET = require("@/rules/bracket.json")
+import { State, Action, Mutation } from 'vuex-class';
+
+import { UpdateBracket } from "../store"
+import { Bracket } from "schemas/bracket"
+const BRACKET_RULES = require("@/rules/bracket.json")
 
 @Component
 export default class Tournament extends Vue {
-  valid: boolean = false;
-  progressOverridden = false;
+  @State("bracket") bracketState!: Bracket
+  @Mutation updateBracket!: UpdateBracket
 
-  customProgress: string = "";
-  progress: number = 1;
-  side: number = 1;
-  finalsProgress: number = 1;
+  valid: boolean = false
 
-  progressList: Array<{name: string, value: number}> = BRACKET.progressList
-  sideList: Array<{name: string, value: number}> = BRACKET.sideList
-  finalsList: Array<{name: string, value: number}> = BRACKET.finalsList
+  get bracket(): Bracket {
+    return this.bracketState
+  }
 
-  progressRules: Array<Function> = [
-    (v: number) => !!v || 'Tournament progress is required'
-  ]
+  progressList: Array<{name: string, value: number}> = BRACKET_RULES.progressList
+  sideList: Array<{name: string, value: number}> = BRACKET_RULES.sideList
+  finalsList: Array<{name: string, value: number}> = BRACKET_RULES.finalsList
 
-  sideRules: Array<Function> = [
-    (v: number) => !!v || 'Tournament progress is required'
-  ]
-
-  finalsProgressRules: Array<Function> = [
-    (v: number) => !!v || 'Grand Finals progress is required'
-  ]
-
-  customProgressRules: Array<Function> = [
-    (v: string) => !!v || 'Custom progress is required'
-  ]
 }
 </script>

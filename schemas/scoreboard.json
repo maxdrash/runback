@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "number"
+      },
+      "score": {
+        "type": "number"
+      },
+      "gamerTagOverride": {
+        "type": "string"
+      },
+      "teamOverride": {
+        "type": "string"
+      },
+      "countryOverride": {
+        "type": "string"
+      },
+      "shouldOverride": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "score",
+      "gamerTagOverride",
+      "teamOverride",
+      "countryOverride",
+      "shouldOverride"
+    ]
+  },
+  "default": [
+      {
+          "id": 1,
+          "score": 0,
+          "gamerTagOverride": "",
+          "teamOverride": "",
+          "countryOverride": "AU",
+          "shouldOverride": false
+      },
+      {
+          "id": 2,
+          "score": 0,
+          "gamerTagOverride": "",
+          "teamOverride": "",
+          "countryOverride": "AU",
+          "shouldOverride": false
+      }
+  ]
+}
