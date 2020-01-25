@@ -26,6 +26,7 @@
             <v-row>
               <v-col cols="12" :md="3">
                 <v-text-field
+                  v-model="search"
                   hide-details
                   prepend-icon="mdi-magnify"
                   single-line
@@ -37,8 +38,8 @@
           <v-card-text>
             <v-row>
 
-              <v-col cols="6" :sm="4" :md="3">
-                <player-card></player-card>
+              <v-col cols="6" :sm="4" :md="3" v-for="player in filterPlayers()">
+                <player-card :index="player.id"></player-card>
               </v-col>
 
             </v-row>
@@ -61,9 +62,25 @@ import { UpdatePlayers } from "./store"
 
 @Component
 export default class App extends Vue {
+  @State("players") playersState!: Players
+  @Mutation updatePlayers!: UpdatePlayers
+
+  search: string = ""
+
   dropdownItems: Array<{title: string}> = [
     { title: "Import players" },
     { title: "Export players" },
   ]
+
+  get players(): Players {
+    return this.playersState
+  }
+
+  filterPlayers(): Players {
+    return this.players.filter(i =>
+      i.gamerTag.toLowerCase().includes(this.search.toLowerCase()) ||
+      i.team.toLowerCase().includes(this.search.toLowerCase())
+    )
+  }
 }
 </script>

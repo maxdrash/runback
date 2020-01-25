@@ -30,22 +30,28 @@
     "required": [
       "id",
       "name",
+      "team",
       "gamerTag",
-      "country"
+      "country",
+      "twitter"
     ]
   },
   "default": [
       {
-          "id": 1,
+          "id": 0,
           "name": "Name 1",
+          "team": "",
           "gamerTag": "Gamertag 1",
-          "country": "AU"
+          "country": "AU",
+          "twitter": ""
       },
       {
-          "id": 2,
+          "id": 1,
           "name": "Name 2",
+          "team": "",
           "gamerTag": "Gamertag 2",
-          "country": "AU"
+          "country": "AU",
+          "twitter": ""
       }
   ]
 }

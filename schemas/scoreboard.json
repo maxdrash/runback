@@ -35,7 +35,7 @@
   },
   "default": [
       {
-          "id": 1,
+          "id": 0,
           "score": 0,
           "gamerTagOverride": "",
           "teamOverride": "",
@@ -43,7 +43,7 @@
           "shouldOverride": false
       },
       {
-          "id": 2,
+          "id": 1,
           "score": 0,
           "gamerTagOverride": "",
           "teamOverride": "",

@@ -76,6 +76,5 @@ export default class Tournament extends Vue {
   progressList: Array<{name: string, value: number}> = BRACKET_RULES.progressList
   sideList: Array<{name: string, value: number}> = BRACKET_RULES.sideList
   finalsList: Array<{name: string, value: number}> = BRACKET_RULES.finalsList
-
 }
 </script>

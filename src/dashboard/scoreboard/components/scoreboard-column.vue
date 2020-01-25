@@ -16,7 +16,7 @@
       </v-col>
       <v-col cols="4">
         <div class="display-3 text-center text-no-wrap black--text px-2">
-          {{ scoreboardState[playerIndex].score }}
+          {{ scoreboard[playerIndex].score }}
         </div>
       </v-col>
       <v-col cols="2" class="d-flex justify-center">
@@ -29,8 +29,8 @@
 
     <v-container>
       <v-autocomplete
-        v-model="scoreboardState[playerIndex].id"
-        :items="playersState"
+        v-model="scoreboard[playerIndex].id"
+        :items="players"
         item-text="gamerTag"
         item-value="id"
         label="Player"
@@ -65,19 +65,14 @@
                     v-model="valid"
                     >
                     <v-text-field
-                      v-model="scoreboardState[playerIndex].gamerTagOverride"
+                      v-model="scoreboard[playerIndex].gamerTagOverride"
                       :rules="gamerTagRules"
                       label="Gamertag*"
                       required
                       ></v-text-field>
 
-                    <v-text-field
-                      v-model="scoreboardState[playerIndex].teamOverride"
-                      label="Team"
-                      ></v-text-field>
-
                     <v-autocomplete
-                      v-model="scoreboardState[playerIndex].countryOverride"
+                      v-model="scoreboard[playerIndex].countryOverride"
                       :items="countries"
                       :rules="countryRules"
                       item-text="country"
@@ -85,6 +80,11 @@
                       label="Country*"
                       required
                       ></v-autocomplete>
+
+                    <v-text-field
+                      v-model="scoreboard[playerIndex].teamOverride"
+                      label="Team"
+                      ></v-text-field>
                     </v-form>
                   </v-container>
                   <small>*indicates required field</small>
@@ -107,7 +107,7 @@
           <v-col cols="auto" align="center">
             <v-checkbox
               class="mt-5 ml-n4"
-              v-model="scoreboardState[playerIndex].shouldOverride"
+              v-model="scoreboard[playerIndex].shouldOverride"
               @change="updateScoreboard(scoreboardState)"
               ></v-checkbox>
           </v-col>
@@ -145,15 +145,7 @@ export default class ScoreboardColumn extends Vue {
   valid: boolean = true
   dialog: boolean = false
 
-  displayName() {
-    let player = this.playersState.find(e =>
-      e.id === this.scoreboardState[this.playerIndex].id
-    )!
-
-    return player.team ? player.team + " | " + player.name : player.name
-  }
-
-  countries: Array<{name: string, abbreviation: string}> = COUNTRIES
+  countries: Array<{country: string, abbreviation: string}> = COUNTRIES
 
   gamerTagRules: Array<Function> = [
     (v: string) => !!v || 'Gamertag is required'
@@ -163,9 +155,24 @@ export default class ScoreboardColumn extends Vue {
     (v: string) => !!v || 'Country is required'
   ]
 
+  get players(): Players {
+    return this.playersState
+  }
+
+  get scoreboard(): Scoreboard {
+    return this.scoreboardState
+  }
+
+  displayName() {
+    let player = this.players[this.scoreboard[this.playerIndex].id]
+
+    return player.team ? player.team + " | " + player.gamerTag : player.gamerTag
+  }
+
   updateScore(wasPlus: boolean) {
-    this.scoreboardState[this.playerIndex].score =
-      clamp(this.scoreboardState[this.playerIndex].score + (wasPlus ? 1 : -1), this.MIN, this.MAX)
+    this.scoreboard[this.playerIndex].score =
+      clamp(this.scoreboard[this.playerIndex].score + (wasPlus ? 1 : -1), this.MIN, this.MAX)
+
     this.updateScoreboard(this.scoreboardState)
   }
 

@@ -9,8 +9,8 @@ export type Players = {
   id: number;
   smashId?: number;
   name: string;
-  team?: string;
+  team: string;
   gamerTag: string;
   country: string;
-  twitter?: string;
+  twitter: string;
 }[];
