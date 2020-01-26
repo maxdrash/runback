@@ -19,7 +19,7 @@
           <v-icon left>mdi-swap-horizontal</v-icon>
           Swap
         </v-btn>
-        <v-btn @click="resetScore()" color="primary" class="mx-2">
+        <v-btn @click="resetGames()" color="primary" class="mx-2">
           <v-icon left>mdi-close</v-icon>
           Reset
         </v-btn>
@@ -35,24 +35,27 @@ import { Vue, Component, Prop, Provide } from "vue-property-decorator"
 import { State, Mutation, Action } from 'vuex-class';
 
 import { Scoreboard as ScoreboardSchema } from "schemas/scoreboard"
-import { UpdateScoreboard } from "../store"
+import { SetPlayerId, SetGames } from "../store"
 
 @Component
 export default class Scoreboard extends Vue {
   @State("scoreboard") scoreboardState!: ScoreboardSchema
-  @Mutation updateScoreboard!: UpdateScoreboard
+  @Mutation setPlayerId!: SetPlayerId
+  @Mutation setGames!: SetGames
 
-  resetScore(): void {
-    this.scoreboardState[0].score = 0
-    this.scoreboardState[1].score = 0
-    this.updateScoreboard(this.scoreboardState)
+  get scoreboard(): ScoreboardSchema {
+    return this.scoreboardState
+  }
+
+  resetGames(): void {
+    this.setGames({playerIndex: 0, games: 0})
+    this.setGames({playerIndex: 1, games: 0})
   }
 
   swapPlayers(): void {
-    [this.scoreboardState[0].id, this.scoreboardState[1].id] =
-      [this.scoreboardState[1].id, this.scoreboardState[0].id]
-
-    this.updateScoreboard(this.scoreboardState)
+    let tmp = this.scoreboard[1].playerId
+    this.setPlayerId({playerIndex: 1, playerId: this.scoreboard[0].playerId})
+    this.setPlayerId({playerIndex: 0, playerId: tmp})
   }
 }
 </script>

@@ -1,57 +1,27 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "type": "array",
-  "items": {
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-      "id": {
-        "type": "number"
-      },
-      "smashId": {
-        "type": "number"
-      },
-      "name": {
-        "type": "string"
-      },
-      "team": {
-        "type": "string"
-      },
-      "gamerTag": {
-        "type": "string"
-      },
-      "country": {
-        "type": "string"
-      },
-      "twitter": {
-        "type": "string"
-      }
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "array",
+    "items": {
+        "$ref": "player.json"
     },
-    "required": [
-      "id",
-      "name",
-      "team",
-      "gamerTag",
-      "country",
-      "twitter"
+    "default": [
+        {
+            "id": 0,
+            "smashId": -1,
+            "name": "Name",
+            "team": "",
+            "gamerTag": "Player 1",
+            "country": "AU",
+            "twitter": ""
+        },
+        {
+            "id": 1,
+            "smashId": -1,
+            "name": "Name",
+            "team": "",
+            "gamerTag": "Player 2",
+            "country": "AU",
+            "twitter": ""
+        }
     ]
-  },
-  "default": [
-      {
-          "id": 0,
-          "name": "Name 1",
-          "team": "",
-          "gamerTag": "Gamertag 1",
-          "country": "AU",
-          "twitter": ""
-      },
-      {
-          "id": 1,
-          "name": "Name 2",
-          "team": "",
-          "gamerTag": "Gamertag 2",
-          "country": "AU",
-          "twitter": ""
-      }
-  ]
 }

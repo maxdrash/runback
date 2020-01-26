@@ -10,5 +10,5 @@ export interface Bracket {
   progress: number;
   finals: number;
   customProgress: string;
-  shouldOverride: boolean;
+  shouldOverrideProgress: boolean;
 }

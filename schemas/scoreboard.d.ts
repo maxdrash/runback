@@ -6,8 +6,8 @@
  */
 
 export type Scoreboard = {
-  id: number;
-  score: number;
+  playerId: number;
+  games: number;
   gamerTagOverride: string;
   teamOverride: string;
   countryOverride: string;

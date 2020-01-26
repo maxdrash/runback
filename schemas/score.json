@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "playerId": {
+        "type": "number"
+      },
+      "games": {
+        "type": "number"
+      },
+      "gamerTagOverride": {
+        "type": "string"
+      },
+      "teamOverride": {
+        "type": "string"
+      },
+      "countryOverride": {
+        "type": "string"
+      },
+      "shouldOverride": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "playerId",
+      "games",
+      "gamerTagOverride",
+      "teamOverride",
+      "countryOverride",
+      "shouldOverride"
+    ]
+}

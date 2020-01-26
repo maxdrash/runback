@@ -18,7 +18,7 @@
             <v-row class="my-n3">
               <v-col cols="12">
                 <div class="text-truncate">
-                  {{ players[index].name }}
+                  {{ localPlayer.name }}
                 </div>
               </v-col>
             </v-row>
@@ -39,7 +39,7 @@
 
         <v-col cols="2" align="end" justify="end">
 
-          <v-dialog v-model="dialog" persistent max-width="600px">
+          <v-dialog v-model="dialog" persistent max-width="600px" @input="clearForm()">
             <template v-slot:activator="{ on }">
               <v-btn text icon v-on="on">
                 <v-icon>mdi-pencil</v-icon>
@@ -52,24 +52,24 @@
               <v-card-text>
                 <v-container>
                   <v-form
-                    ref="form"
+                    ref="editForm"
                     v-model="valid"
                     >
                     <v-text-field
-                      v-model="players[index].gamerTag"
+                      v-model="localPlayer.gamerTag"
                       :rules="gamerTagRules"
                       label="Gamertag*"
                       required
                       ></v-text-field>
 
                     <v-text-field
-                      v-model="players[index].name"
+                      v-model="localPlayer.name"
                       :rules="nameRules"
                       label="Name*"
                       ></v-text-field>
 
                     <v-autocomplete
-                      v-model="players[index].country"
+                      v-model="localPlayer.country"
                       :items="countries"
                       :rules="countryRules"
                       item-text="country"
@@ -79,69 +79,89 @@
                       ></v-autocomplete>
 
                     <v-text-field
-                      v-model="players[index].team"
+                      v-model="localPlayer.team"
                       label="Team"
                       ></v-text-field>
 
-                    <v-text-field
-                      v-model="players[index].twitter"
-                      label="Twitter"
-                      ></v-text-field>
+                  <v-text-field
+                    v-model="localPlayer.twitter"
+                    label="Twitter"
+                    ></v-text-field>
 
-                    </v-form>
-                  </v-container>
-                  <small>*indicates required field</small>
-                </v-card-text>
-                <v-card-actions>
+                  </v-form>
+                </v-container>
+                <small>*indicates required field</small>
+              </v-card-text>
+              <v-card-actions>
+                <v-dialog v-model="deleteDialog" persistent max-width="400px">
+                  <template v-slot:activator="{ on }">
 
-                      <v-dialog v-model="deleteDialog" persistent max-width="400px">
-                        <template v-slot:activator="{ on }">
-                          <v-btn color="error darken-1" v-on="on" text>
+                    <v-tooltip
+                      v-if="players.length <= 2"
+                      v-model="showTooltip"
+                      right
+                      >
+                      <template v-slot:activator="{ on: tooltip }">
+                        <div v-on="tooltip">
+                          <v-btn
+                            color="error darken-1"
+                            v-on="on"
+                            text
+                            :disabled="players.length <= 2"
+                            >
                             Delete
                           </v-btn>
-                        </template>
-                        <v-card>
-                          <v-card-title>
-                            <span class="headline">Confirm deletion</span>
-                          </v-card-title>
-                          <v-card-text>
-                            <v-container>
-                              Are you sure? Deleted players cannot be recovered.
-                            </v-container>
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="dialog = false">Cancel</v-btn>
-                            <v-btn
-                              :disabled="!valid"
-                              color="error darken-1"
-                              text
-                              @click="deletePlayer()"
-                              >
-                              Delete
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
+                        </div>
+                      </template>
+                      <span v-if="players.length <= 2">Two players must exist</span>
+                    </v-tooltip>
+                    <v-btn
+                      v-else
+                      color="error darken-1"
+                      v-on="on"
+                      text
+                      :disabled="players.length <= 2"
+                      >
+                      Delete
+                    </v-btn>
 
+                  </template>
+                  <v-card>
+                    <v-card-title>
+                      <span class="headline">Confirm deletion</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        Are you sure? Deleted players cannot be recovered.
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="deleteDialog = false">Cancel</v-btn>
+                      <v-btn
+                        :disabled="!valid"
+                        color="error darken-1"
+                        text
+                        @click="confirmDeletePlayer()"
+                        >
+                        Delete
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
 
-
-
-
-
-
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="dialog = false">Cancel</v-btn>
-                  <v-btn
-                    :disabled="!valid"
-                    color="blue darken-1"
-                    text
-                    @click="saveDialog()">
-                    Save
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="dialog = false">Cancel</v-btn>
+                <v-btn
+                  :disabled="!valid"
+                  color="blue darken-1"
+                  text
+                  @click="saveDialog()">
+                  Save
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-col>
 
       </v-row>
@@ -155,39 +175,47 @@ import 'reflect-metadata';
 import { Vue, Component, Prop, Provide } from 'vue-property-decorator';
 import { State, Mutation, Action } from 'vuex-class';
 
+import { Player } from "schemas/player"
 import { Players } from "schemas/players"
-import { UpdatePlayers } from "../store"
+import { UpdatePlayer, DeletePlayer } from "../store"
 
+import clone from "clone"
 import COUNTRIES from "country-json/src/country-by-abbreviation.json"
 
 @Component
 export default class PlayerCard extends Vue {
-  @Prop() index!: number
+  @Prop() playerId!: number
   @State("players") playersState!: Players
-  @Mutation updatePlayers!: UpdatePlayers
+  @Mutation updatePlayer!: UpdatePlayer
+  @Mutation deletePlayer!: DeletePlayer
 
-  @Prop({default: 'Name'}) name!: string
-  @Prop({default: 'Gamertag'}) gamerTag!: string
-  @Prop({default: 'Team'}) team!: string
-  @Prop({default: 'Country'}) country!: string
-
+  localPlayer!: Player
   valid: boolean = true
   dialog: boolean = false
+  showTooltip: boolean = false
   deleteDialog: boolean = false
 
-  countries: Array<{country: string, abbreviation: string}> = COUNTRIES
+  readonly countries: Array<{country: string, abbreviation: string}> = COUNTRIES
 
-  gamerTagRules: Array<Function> = [
+  readonly gamerTagRules: Array<Function> = [
     (v: string) => !!v || 'Gamertag is required'
   ]
 
-  countryRules: Array<Function> = [
+  readonly countryRules: Array<Function> = [
     (v: string) => !!v || 'Country is required'
   ]
 
-  nameRules: Array<Function> = [
+  readonly nameRules: Array<Function> = [
     (v: string) => !!v || 'Name is required'
   ]
+
+  created(): void {
+    this.clearForm()
+  }
+
+  clearForm(): void {
+    this.localPlayer = clone(this.players[this.playerId])
+  }
 
   get players(): Players {
     return this.playersState
@@ -195,21 +223,23 @@ export default class PlayerCard extends Vue {
 
   saveDialog(): void {
     this.dialog = false
-    this.updatePlayers(this.playersState)
+    this.updatePlayer(this.localPlayer)
   }
 
   countryName() {
-    return this.countries.find(i => i.abbreviation === this.players[this.index].country)!.country!
+    return this.countries.find(
+      i => i.abbreviation === this.players[this.playerId].country)!.country!
   }
 
   displayName() {
-    let player = this.players[this.index]
+    let player = this.players[this.playerId]
 
     return player.team ? player.team + " | " + player.gamerTag : player.gamerTag
   }
 
-  deletePlayer(): void {
-    console.log("Delete")
+  confirmDeletePlayer(): void {
+    this.dialog = false
+    this.deletePlayer(this.playerId)
   }
 }
 

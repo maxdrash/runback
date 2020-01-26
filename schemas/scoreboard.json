@@ -1,54 +1,25 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "type": "array",
-  "items": {
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-      "id": {
-        "type": "number"
-      },
-      "score": {
-        "type": "number"
-      },
-      "gamerTagOverride": {
-        "type": "string"
-      },
-      "teamOverride": {
-        "type": "string"
-      },
-      "countryOverride": {
-        "type": "string"
-      },
-      "shouldOverride": {
-        "type": "boolean"
-      }
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "array",
+    "items": {
+        "$ref": "score.json"
     },
-    "required": [
-      "id",
-      "score",
-      "gamerTagOverride",
-      "teamOverride",
-      "countryOverride",
-      "shouldOverride"
+    "default": [
+        {
+            "playerId": 0,
+            "games": 0,
+            "gamerTagOverride": "",
+            "teamOverride": "",
+            "countryOverride": "AU",
+            "shouldOverride": false
+        },
+        {
+            "playerId": 1,
+            "games": 0,
+            "gamerTagOverride": "",
+            "teamOverride": "",
+            "countryOverride": "AU",
+            "shouldOverride": false
+        }
     ]
-  },
-  "default": [
-      {
-          "id": 0,
-          "score": 0,
-          "gamerTagOverride": "",
-          "teamOverride": "",
-          "countryOverride": "AU",
-          "shouldOverride": false
-      },
-      {
-          "id": 1,
-          "score": 0,
-          "gamerTagOverride": "",
-          "teamOverride": "",
-          "countryOverride": "AU",
-          "shouldOverride": false
-      }
-  ]
 }

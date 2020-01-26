@@ -19,7 +19,7 @@
             "type": "string" ,
             "default": ""
         },
-        "shouldOverride": {
+        "shouldOverrideProgress": {
             "type": "boolean" ,
             "default": false
         }
@@ -29,6 +29,6 @@
         "progress",
         "finals",
         "customProgress",
-        "shouldOverride"
+        "shouldOverrideProgress"
     ]
 }

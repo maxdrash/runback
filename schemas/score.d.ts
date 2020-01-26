@@ -5,12 +5,11 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type Players = {
-  id: number;
-  smashId: number;
-  name: string;
-  team: string;
-  gamerTag: string;
-  country: string;
-  twitter: string;
-}[];
+export interface Score {
+  playerId: number;
+  games: number;
+  gamerTagOverride: string;
+  teamOverride: string;
+  countryOverride: string;
+  shouldOverride: boolean;
+}
