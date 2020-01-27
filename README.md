@@ -10,12 +10,12 @@
 ---
 
 ## Table of Contents
-* [1 Features](#features)
-* [2. Installation](#installation)
-* [3. Meta](#meta)
-  * [3.1 License](#license)
-  * [3.2 Built With](#built-with)
-  * [3.3 Acknowledgments](#acknowledgements)
+* [1  Features](#features)
+* [2  Installation](#installation)
+* [3  Meta](#meta)
+  * [3.1  License](#license)
+  * [3.2  Built With](#built-with)
+  * [3.3  Acknowledgments](#acknowledgements)
 
 ## Features
   * Easy-to-use interface
