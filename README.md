@@ -1,5 +1,5 @@
 <div align=center>
-  <img src="https://i.imgur.com/9E1mdCY.png" alt="runback-logo" width="300">
+  <img src="https://i.imgur.com/9E1mdCY.png" alt="runback-logo" width="500">
   <p>
     <b>
       Broadcast graphics for fighting games
@@ -52,6 +52,7 @@ This project is licensed under the ISC license. Please see the [`LICENSE.md`](LI
 file for details.
 
 ### Built With
+* nodecg-vue-ts-template
 * NodeCG
 * Vue
 * Vuetify
