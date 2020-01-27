@@ -48,12 +48,10 @@ This project is licensed under the ISC license. Please see the [`LICENSE.md`](LI
 file for details.
 
 ### Built With
-* nodecg-vue-ts-template
 * NodeCG
 * Vue
 * Vuetify
 * Typescript
-* JSON Schema
 
 ### Acknowledgments
 * Inspired by [ssbutw](https://github.com/crs38c28/ssbutw)
