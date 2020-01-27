@@ -1,21 +1,17 @@
 <div align=center>
   <img src="https://i.imgur.com/9E1mdCY.png" alt="runback-logo" width="500">
   <p>
-    <b>
-      Broadcast graphics for fighting games
-    </b>
+    Broadcast graphics for fighting games
   </p>
 </div>
 
----
-
 ## Table of Contents
-* [1  Features](#features)
-* [2  Installation](#installation)
-* [3  Meta](#meta)
-  * [3.1  License](#license)
-  * [3.2  Built With](#built-with)
-  * [3.3  Acknowledgments](#acknowledgements)
+* [1&nbsp;&nbsp;Features](#features)
+* [2&nbsp;&nbsp;Installation](#installation)
+* [3&nbsp;&nbsp;Meta](#meta)
+  * [3.1&nbsp;&nbsp;License](#license)
+  * [3.2&nbsp;&nbsp;Built With](#built-with)
+  * [3.3&nbsp;&nbsp;Acknowledgments](#acknowledgements)
 
 ## Features
   * Easy-to-use interface
