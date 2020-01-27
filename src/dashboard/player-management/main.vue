@@ -201,19 +201,15 @@ export default class App extends Vue {
   }
 
   get filterPlayers(): Players {
-    return this.players.filter(i =>
-      i.isActive &&
-      (i.gamerTag.toLowerCase().includes(this.search.toLowerCase()) ||
-      i.team.toLowerCase().includes(this.search.toLowerCase()))
-    ).sort(function(a, b) {
-      function displayName(p: Player) {
-        return p.team ? p.team + " | " + p.gamerTag : p.gamerTag
-      }
+    function displayName(p: Player): string {
+      return p.team ? p.team + " | " + p.gamerTag : p.gamerTag
+    }
 
-      const aDisplayName = displayName(a)
-      const bDisplayName = displayName(b)
-      return aDisplayName.localeCompare(bDisplayName)
-    })
+    return this.players.filter(i =>
+      i.isActive && displayName(i).toLowerCase().includes(this.search.toLowerCase())
+    ).sort((a, b) =>
+      displayName(a).localeCompare(displayName(b))
+    )
   }
 }
 </script>
