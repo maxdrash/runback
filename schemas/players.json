@@ -12,7 +12,8 @@
             "team": "",
             "gamerTag": "Player 1",
             "country": "AU",
-            "twitter": ""
+            "twitter": "",
+            "isActive": true
         },
         {
             "id": 1,
@@ -21,7 +22,8 @@
             "team": "",
             "gamerTag": "Player 2",
             "country": "AU",
-            "twitter": ""
+            "twitter": "",
+            "isActive": true
         }
     ]
 }

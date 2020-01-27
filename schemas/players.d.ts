@@ -13,4 +13,5 @@ export type Players = {
   gamerTag: string;
   country: string;
   twitter: string;
+  isActive: boolean;
 }[];

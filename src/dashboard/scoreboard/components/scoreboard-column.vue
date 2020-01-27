@@ -3,7 +3,7 @@
 
     <v-row align="center" justify="center">
       <div class="headline justify-center black--text">
-        {{ displayName() }}
+        {{ displayName(scoreboard[playerIndex].playerId) }}
       </div>
     </v-row>
 
@@ -29,20 +29,19 @@
 
     <v-container>
       <v-autocomplete
-        v-model="localScore.playerId"
-        :items="players"
+        v-model="playerId"
+        :items="validPlayers"
         item-text="gamerTag"
         item-value="id"
         label="Player"
         outlined
-        @change="setPlayerId({playerIndex: playerIndex, playerId: localScore.playerId})"
         >
         <template v-slot:selection="{ item, index }">
-          {{ item.team ? item.team + " | " : "" }} {{ item.gamerTag }}
+          {{ displayName(item.id) }}
         </template>
 
         <template v-slot:item="{ item, index }">
-          {{ item.team ? item.team + " | " : "" }} {{ item.gamerTag }}
+          {{ displayName(item.id) }}
         </template>
 
       </v-autocomplete>
@@ -170,6 +169,14 @@ export default class ScoreboardColumn extends Vue {
 
   readonly countries: Array<{country: string, abbreviation: string}> = COUNTRIES
 
+  get playerId(): number {
+    return this.scoreboard[this.playerIndex].playerId
+  }
+
+  set playerId(playerId: number) {
+    this.setPlayerId({playerIndex: this.playerIndex, playerId: playerId})
+  }
+
   gamerTagRules: Array<Function> = [
     (v: string) => !!v || 'Gamertag is required'
   ]
@@ -194,8 +201,8 @@ export default class ScoreboardColumn extends Vue {
     return this.scoreboardState
   }
 
-  displayName() {
-    let player = this.players[this.scoreboard[this.playerIndex].playerId]
+  displayName(playerId: number) {
+    const player = this.players[playerId]
 
     return player.team ? player.team + " | " + player.gamerTag : player.gamerTag
   }
@@ -207,6 +214,10 @@ export default class ScoreboardColumn extends Vue {
     this.setGames({playerIndex: this.playerIndex,
       games: this.localScore.games
     })
+  }
+
+  get validPlayers() {
+    return this.players.filter(i => i.isActive)
   }
 
   saveDialog(): void {

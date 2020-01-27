@@ -33,41 +33,40 @@ const store = new Vuex.Store({
     },
     /* Mutations to replicants start */
     createPlayer(state, player: Player): void {
-      if (typeof reps.players.value !== 'undefined') {
-        player.id = reps.players.value.length
+      let players = reps.players.value
 
-        reps.players.value.push(player)
+      if (typeof players !== "undefined") {
+        player.id = players.length
+        players.push(player)
       }
     },
     updatePlayer(state, player: Player): void {
-      if (typeof reps.players.value !== 'undefined') {
-        reps.players.value[player.id] = player
+      let players = reps.players.value
+
+      if (typeof players !== "undefined") {
+        players[player.id] = player
       }
     },
     deletePlayer(state, playerId: number): void {
-      if (typeof reps.players.value !== 'undefined') {
-        if (reps.players.value.length === 2) {
+      let players = reps.players.value
+      let scoreboard = reps.scoreboard.value
+
+      if (typeof players !== "undefined" && typeof scoreboard !== "undefined") {
+        let numPlayers = players.filter(i => i.isActive).length
+
+        if (numPlayers === 2) {
           throw "At least two players must exist"
         }
 
-        // Remove the player and reindex the players array.
-        let tmp = clone(reps.players.value)
-        tmp.splice(playerId, 1)
-
-        for (let i = 0; i < tmp.length; ++i) {
-          tmp[i].id = i
-        }
-
-        // Reset a selected player if it was deleted.
-        if (typeof reps.scoreboard.value !== 'undefined') {
-          for (let i = 0; i < reps.scoreboard.value.length; ++i) {
-            if (reps.scoreboard.value[i].playerId === playerId) {
-              reps.scoreboard.value[i].playerId = 0
-            }
+        // Reset a deleted player if they are currently selected on the scoreboard.
+        for (let i = 0; i < scoreboard.length; ++i) {
+          if (scoreboard[i].playerId === playerId) {
+            let defaultId = players.find(i => i.isActive && i.id !== playerId)!.id
+            scoreboard[i].playerId = defaultId
           }
         }
 
-        reps.players.value = tmp
+        players[playerId].isActive = false
       }
     },
     /* Mutations to replicants end */

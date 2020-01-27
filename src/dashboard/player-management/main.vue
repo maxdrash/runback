@@ -114,7 +114,7 @@
           <v-card-text>
             <v-row>
 
-              <v-col cols="6" :sm="4" :md="3" v-for="player in filterPlayers()">
+              <v-col cols="6" :sm="4" :md="3" v-for="player in filterPlayers">
                 <player-card :playerId="player.id"></player-card>
               </v-col>
 
@@ -157,7 +157,8 @@ export default class App extends Vue {
     team: "",
     gamerTag: "",
     country: "",
-    twitter: ""
+    twitter: "",
+    isActive: true,
   }
 
   localPlayer: Player = this.defaultPlayer
@@ -199,11 +200,20 @@ export default class App extends Vue {
     return this.playersState
   }
 
-  filterPlayers(): Players {
+  get filterPlayers(): Players {
     return this.players.filter(i =>
-      i.gamerTag.toLowerCase().includes(this.search.toLowerCase()) ||
-      i.team.toLowerCase().includes(this.search.toLowerCase())
-    )
+      i.isActive &&
+      (i.gamerTag.toLowerCase().includes(this.search.toLowerCase()) ||
+      i.team.toLowerCase().includes(this.search.toLowerCase()))
+    ).sort(function(a, b) {
+      function displayName(p: Player) {
+        return p.team ? p.team + " | " + p.gamerTag : p.gamerTag
+      }
+
+      const aDisplayName = displayName(a)
+      const bDisplayName = displayName(b)
+      return aDisplayName.localeCompare(bDisplayName)
+    })
   }
 }
 </script>

@@ -23,6 +23,9 @@
       },
       "twitter": {
         "type": "string"
+      },
+      "isActive": {
+        "type": "boolean"
       }
     },
     "required": [
@@ -32,6 +35,7 @@
         "team",
         "gamerTag",
         "country",
-        "twitter"
+        "twitter",
+        "isActive"
     ]
 }

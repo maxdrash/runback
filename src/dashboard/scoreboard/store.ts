@@ -28,9 +28,6 @@ const defaultBracket: Bracket = {
 }
 
 // Types for mutations below
-export type UpdateBracket = (bracket: Bracket) => void
-export type UpdateScoreboard = (scoreboard: Scoreboard) => void
-
 export type SetPlayerId = (args: {playerIndex: number, playerId: number}) => void
 export type SetGames = (args: {playerIndex: number, games: number}) => void
 export type SetGamerTagOverride = (args: {playerIndex: number, gamerTagOverride: string}) => void
@@ -56,73 +53,91 @@ const store = new Vuex.Store({
       Vue.set(state, name, val)
     },
     /* Mutations to replicants start */
-    updateBracket(state, bracket: Bracket): void {
-      reps.bracket.value = clone(bracket)
-    },
-
     setPlayerId(state, args: {playerIndex: number, playerId: number}): void {
-      if (typeof reps.scoreboard.value !== 'undefined') {
-        reps.scoreboard.value[args.playerIndex].playerId = args.playerId
+      let scoreboard = reps.scoreboard.value
+
+      if (typeof scoreboard !== "undefined") {
+        scoreboard[args.playerIndex].playerId = args.playerId
       }
     },
 
     setGames(state, args: {playerIndex: number, games: number}): void {
-      if (typeof reps.scoreboard.value !== 'undefined') {
-        reps.scoreboard.value[args.playerIndex].games = args.games
+      let scoreboard = reps.scoreboard.value
+
+      if (typeof scoreboard !== "undefined") {
+        scoreboard[args.playerIndex].games = args.games
       }
     },
 
     setGamerTagOverride(state, args: {playerIndex: number, gamerTagOverride: string}): void {
-      if (typeof reps.scoreboard.value !== 'undefined') {
-        reps.scoreboard.value[args.playerIndex].gamerTagOverride = args.gamerTagOverride
+      let scoreboard = reps.scoreboard.value
+
+      if (typeof scoreboard !== "undefined") {
+        scoreboard[args.playerIndex].gamerTagOverride = args.gamerTagOverride
       }
     },
 
     setTeamOverride(state, args: {playerIndex: number, teamOverride: string}): void {
-      if (typeof reps.scoreboard.value !== 'undefined') {
-        reps.scoreboard.value[args.playerIndex].teamOverride = args.teamOverride
+      let scoreboard = reps.scoreboard.value
+
+      if (typeof scoreboard !== "undefined") {
+        scoreboard[args.playerIndex].teamOverride = args.teamOverride
       }
     },
 
     setCountryOverride(state, args: {playerIndex: number, countryOverride: string}): void {
-      if (typeof reps.scoreboard.value !== 'undefined') {
-        reps.scoreboard.value[args.playerIndex].countryOverride = args.countryOverride
+      let scoreboard = reps.scoreboard.value
+
+      if (typeof scoreboard !== "undefined") {
+        scoreboard[args.playerIndex].countryOverride = args.countryOverride
       }
     },
 
     setShouldOverride(state, args: {playerIndex: number, shouldOverride: boolean}): void {
-      if (typeof reps.scoreboard.value !== 'undefined') {
-        reps.scoreboard.value[args.playerIndex].shouldOverride = args.shouldOverride
+      let scoreboard = reps.scoreboard.value
+
+      if (typeof scoreboard !== "undefined") {
+        scoreboard[args.playerIndex].shouldOverride = args.shouldOverride
       }
     },
 
     setSide(state, side: number) {
-      if (typeof reps.bracket.value !== 'undefined') {
-        reps.bracket.value.side = side
+      let bracket = reps.bracket.value
+
+      if (typeof bracket !== "undefined") {
+        bracket.side = side
       }
     },
 
     setProgress(state, progress: number) {
-      if (typeof reps.bracket.value !== 'undefined') {
-        reps.bracket.value.progress = progress
+      let bracket = reps.bracket.value
+
+      if (typeof bracket !== "undefined") {
+        bracket.progress = progress
       }
     },
 
     setFinals(state, finals: number) {
-      if (typeof reps.bracket.value !== 'undefined') {
-        reps.bracket.value.finals = finals
+      let bracket = reps.bracket.value
+
+      if (typeof bracket !== "undefined") {
+        bracket.finals = finals
       }
     },
 
     setCustomProgress(state, customProgress: string) {
-      if (typeof reps.bracket.value !== 'undefined') {
-        reps.bracket.value.customProgress = customProgress
+      let bracket = reps.bracket.value
+
+      if (typeof bracket !== "undefined") {
+        bracket.customProgress = customProgress
       }
     },
 
     setShouldOverrideProgress(state, shouldOverrideProgress: boolean) {
-      if (typeof reps.bracket.value !== 'undefined') {
-        reps.bracket.value.shouldOverrideProgress = shouldOverrideProgress
+      let bracket = reps.bracket.value
+
+      if (typeof bracket !== "undefined") {
+        bracket.shouldOverrideProgress = shouldOverrideProgress
       }
     }
     /* Mutations to replicants end */

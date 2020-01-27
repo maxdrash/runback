@@ -13,4 +13,5 @@ export interface Player {
   gamerTag: string;
   country: string;
   twitter: string;
+  isActive: boolean;
 }

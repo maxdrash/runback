@@ -18,7 +18,7 @@
             <v-row class="my-n3">
               <v-col cols="12">
                 <div class="text-truncate">
-                  {{ localPlayer.name }}
+                  {{ players[playerId].name }}
                 </div>
               </v-col>
             </v-row>
@@ -95,35 +95,36 @@
               <v-card-actions>
                 <v-dialog v-model="deleteDialog" persistent max-width="400px">
                   <template v-slot:activator="{ on }">
-
-                    <v-tooltip
-                      v-if="players.length <= 2"
-                      v-model="showTooltip"
-                      right
-                      >
-                      <template v-slot:activator="{ on: tooltip }">
-                        <div v-on="tooltip">
-                          <v-btn
-                            color="error darken-1"
-                            v-on="on"
-                            text
-                            :disabled="players.length <= 2"
-                            >
-                            Delete
-                          </v-btn>
-                        </div>
-                      </template>
-                      <span v-if="players.length <= 2">Two players must exist</span>
-                    </v-tooltip>
-                    <v-btn
-                      v-else
-                      color="error darken-1"
-                      v-on="on"
-                      text
-                      :disabled="players.length <= 2"
-                      >
-                      Delete
-                    </v-btn>
+                    <div v-if="shouldDisplayDelete">
+                      <v-tooltip
+                        v-model="showTooltip"
+                        right
+                        >
+                        <template v-slot:activator="{ on: tooltip }">
+                          <div v-on="tooltip">
+                            <v-btn
+                              color="error darken-1"
+                              v-on="on"
+                              text
+                              :disabled="shouldDisplayDelete"
+                              >
+                              Delete
+                            </v-btn>
+                          </div>
+                        </template>
+                        <span>Two players must exist</span>
+                      </v-tooltip>
+                    </div>
+                    <div v-else>
+                      <v-btn
+                        color="error darken-1"
+                        v-on="on"
+                        text
+                        :disabled="shouldDisplayDelete"
+                        >
+                        Delete
+                      </v-btn>
+                    </div>
 
                   </template>
                   <v-card>
@@ -194,6 +195,7 @@ export default class PlayerCard extends Vue {
   dialog: boolean = false
   showTooltip: boolean = false
   deleteDialog: boolean = false
+  key: number = 0
 
   readonly countries: Array<{country: string, abbreviation: string}> = COUNTRIES
 
@@ -217,6 +219,11 @@ export default class PlayerCard extends Vue {
     this.localPlayer = clone(this.players[this.playerId])
   }
 
+  get shouldDisplayDelete() {
+    let length = this.players.filter(i => i.isActive).length
+    return length <= 2
+  }
+
   get players(): Players {
     return this.playersState
   }
@@ -228,11 +235,11 @@ export default class PlayerCard extends Vue {
 
   countryName() {
     return this.countries.find(
-      i => i.abbreviation === this.players[this.playerId].country)!.country!
+      i => i.abbreviation === this.players[this.playerId].country)!.country
   }
 
   displayName() {
-    let player = this.players[this.playerId]
+    const player = this.players[this.playerId]
 
     return player.team ? player.team + " | " + player.gamerTag : player.gamerTag
   }
