@@ -29,6 +29,7 @@
                 <v-list-item
                   v-for="(item, index) in dropdownItems"
                   :key="index"
+                  @click="item.event"
                   >
                   <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </v-list-item>
@@ -140,6 +141,7 @@ import { CreatePlayer } from "./store"
 import COUNTRIES from "country-json/src/country-by-abbreviation.json"
 
 import clone from "clone"
+const FileSaver = require("file-saver");
 
 @Component
 export default class App extends Vue {
@@ -165,9 +167,18 @@ export default class App extends Vue {
 
   readonly countries: Array<{country: string, abbreviation: string}> = COUNTRIES
 
-  readonly dropdownItems: Array<{title: string}> = [
-    { title: "Import players" },
-    { title: "Export players" },
+  importPlayers(): void {
+    console.log("Import")
+  }
+
+  exportPlayers(): void {
+    const blob = new Blob([JSON.stringify(this.players)], {type: "text/plain;charset=utf-8"});
+    FileSaver.saveAs(blob, "runback-exported-players.json");
+  }
+
+  readonly dropdownItems: Array<{title: string, event: Function}> = [
+    { title: "Import players", event: this.importPlayers },
+    { title: "Export players", event: this.exportPlayers },
   ]
 
   readonly gamerTagRules: Array<Function> = [
