@@ -3,7 +3,7 @@
     <v-container>
 
       <v-autocomplete
-        :items="PROGRESS_LIST"
+        :items="progressList"
         v-model="localBracket.progress"
         label="Tournament progress"
         item-text="text"
@@ -13,7 +13,7 @@
         ></v-autocomplete>
 
         <v-autocomplete
-          :items="SIDE_LIST"
+          :items="sideList"
           v-model="localBracket.side"
           label="Bracket side"
           item-text="text"
@@ -23,7 +23,7 @@
           ></v-autocomplete>
 
           <v-autocomplete
-            :items="FINALS_LIST"
+            :items="finalsList"
             v-model="localBracket.finals"
             label="Grand Finals progress"
             item-text="text"
@@ -86,8 +86,8 @@ export default class Tournament extends Vue {
     this.localBracket = clone(this.bracketState)
   }
 
-  readonly PROGRESS_LIST: Array<{name: string, value: number}> = BRACKET_RULES.progressList
-  readonly SIDE_LIST: Array<{name: string, value: number}> = BRACKET_RULES.sideList
-  readonly FINALS_LIST: Array<{name: string, value: number}> = BRACKET_RULES.finalsList
+  readonly progressList: Array<{name: string, value: number}> = BRACKET_RULES.progressList
+  readonly sideList: Array<{name: string, value: number}> = BRACKET_RULES.sideList
+  readonly finalsList: Array<{name: string, value: number}> = BRACKET_RULES.finalsList
 }
 </script>
