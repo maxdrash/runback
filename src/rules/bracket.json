@@ -15,7 +15,7 @@
     { "text": "Top 4", "value": 9 },
     { "text": "Quarter-Finals", "value": 10 },
     { "text": "Semi-Finals", "value": 11 },
-    { "text": "Final", "value": 12 },
+    { "text": "Finals", "value": 12 },
     { "text": "Grand Finals", "value": 13 }
   ],
   "finalsList": [
