@@ -25,14 +25,14 @@ Ensure Node, npm, and yarn are installed.
 
 Clone and build the repo:
 ```
-git clone https://github.com/opeik/nodecg.git
-cd nodecg && npm install --production && cd bundles
-git clone https://github.com/opeik/runback.git
-cd runback && yarn install && yarn build
+$ git clone https://github.com/opeik/nodecg.git
+$ cd nodecg && npm install --production && cd bundles
+$ git clone https://github.com/opeik/runback.git
+$ cd runback && yarn install && yarn build
 ```
 Start the NodeCG server:
 ```
-cd ../.. && node index.js
+$ cd ../.. && node index.js
 ```
 
 ## Meta
