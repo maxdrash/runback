@@ -7,13 +7,13 @@
             <v-card-text class="pa-6">
               <v-row>
                 <v-col cols="12">
-                  <img class="ma-4" src="./img/logo.svg">
+                  <img class="my-n2" src="./img/logo.svg">
 
                   <v-divider class="mt-10"></v-divider>
                 </v-col>
               </v-row>
 
-              <v-row align="center" class="mt-3">
+              <v-row align="center" class="mt-2">
                 <v-col cols="6" class="pa-0">
 
                   <v-row>
