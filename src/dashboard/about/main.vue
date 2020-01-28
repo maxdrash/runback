@@ -2,7 +2,7 @@
   <v-app>
     <v-content>
       <v-row align="center" justify="center">
-        <v-col cols="12" :sm="10" :md="6">
+        <v-col cols="12" :sm="9" :md="6">
           <v-card>
             <v-card-text class="pa-6">
               <v-row>
