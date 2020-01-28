@@ -4427,6 +4427,11 @@ regexpp@^3.0.0:
   resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-3.0.0.tgz#dd63982ee3300e67b41c1956f850aa680d9d330e"
   integrity sha512-Z+hNr7RAVWxznLPuA7DIh8UNX1j9CDrUQxskw9IrBE1Dxue2lyXT+shqEIeLUjrokxIP8CMy1WkjgG3rTsd5/g==
 
+region-flags@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/region-flags/-/region-flags-1.1.0.tgz#6b6017e7eb936826cdda4d1d6446871d4b73fb39"
+  integrity sha1-a2AX5+uTaCbN2k0dZEaHHUtz+zk=
+
 registry-auth-token@^4.0.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/registry-auth-token/-/registry-auth-token-4.1.1.tgz#40a33be1e82539460f94328b0f7f0f84c16d9479"

@@ -103,6 +103,7 @@
     "@types/vfile-message": "^2.0.0",
     "country-json": "^1.1.0",
     "file-saver": "^2.0.2",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "region-flags": "^1.1.0"
   }
 }
