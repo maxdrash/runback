@@ -27,7 +27,7 @@
 
                       <v-row align="center" justify="center">
                         <div class="text-center">
-                          View project on <a :href="github" target="_blank">Github</a>
+                          Check us out on <a :href="github" target="_blank">Github</a>
                         </div>
                       </v-row>
 
