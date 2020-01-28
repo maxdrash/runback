@@ -4,47 +4,44 @@
 
       <v-autocomplete
         :items="progressList"
-        v-model="localBracket.progress"
+        v-model="progress"
         label="Tournament progress"
         item-text="text"
         item-value="value"
         required
-        @change="setProgress(localBracket.progress)"
         ></v-autocomplete>
 
         <v-autocomplete
           :items="sideList"
-          v-model="localBracket.side"
+          v-model="side"
           label="Bracket side"
           item-text="text"
           item-value="value"
+          :disabled="!shouldDisableFinals"
           required
-          @change="setSide(localBracket.side)"
           ></v-autocomplete>
 
           <v-autocomplete
             :items="finalsList"
-            v-model="localBracket.finals"
+            v-model="finals"
             label="Grand Finals progress"
             item-text="text"
             item-value="value"
+            :disabled="shouldDisableFinals"
             required
-            @change="setFinals(localBracket.finals)"
             ></v-autocomplete>
       <v-row class="my-n6">
         <v-col cols="9">
           <v-text-field
-            v-model="localBracket.customProgress"
+            v-model="customProgress"
             label="Custom tournament progress"
             required
-            @change="setCustomProgress(localBracket.customProgress)"
             ></v-text-field>
         </v-col>
         <v-col cols="3">
           <v-checkbox
-            v-model="localBracket.shouldOverrideProgress"
+            v-model="shouldOverrideProgress"
             label="Override"
-            @change="setShouldOverrideProgress(localBracket.shouldOverrideProgress)"
             ></v-checkbox>
         </v-col>
       </v-row>
@@ -79,11 +76,56 @@ export default class Tournament extends Vue {
   @Mutation setCustomProgress!: SetCustomProgress
   @Mutation setShouldOverrideProgress!: SetShouldOverrideProgress
 
-  localBracket!: Bracket
   valid: boolean = false
 
-  created(): void {
-    this.localBracket = clone(this.bracketState)
+  get bracket() {
+    return this.bracketState
+  }
+
+  get side() {
+    return this.bracket.side
+  }
+
+  set side(side: number) {
+    this.setSide(side)
+  }
+
+  get progress() {
+    return this.bracket.progress
+  }
+
+  set progress(progress: number) {
+    this.setProgress(progress)
+  }
+
+  get finals() {
+    return this.bracket.finals
+  }
+
+  set finals(finals: number) {
+    this.setFinals(finals)
+  }
+
+  get customProgress() {
+    return this.bracket.customProgress
+  }
+
+  set customProgress(customProgress: string) {
+    this.setCustomProgress(customProgress)
+  }
+
+  get shouldOverrideProgress() {
+    return this.bracket.shouldOverrideProgress
+  }
+
+  set shouldOverrideProgress(shouldOverrideProgress: boolean) {
+    this.setShouldOverrideProgress(shouldOverrideProgress)
+  }
+
+  get shouldDisableFinals() {
+    const grandFinals: number = 13
+
+    return this.progress !== grandFinals
   }
 
   readonly progressList: Array<{name: string, value: number}> = BRACKET_RULES.progressList
