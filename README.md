@@ -21,23 +21,16 @@
   * smash.gg integration
 
 ## Installation
-Install Node
+Ensure Node, npm, and yarn are installed.
 
-https://nodejs.org/en/download/package-manager/
-
-Install yarn
-```
-npm -g install yarn
-```
-
-Clone and build the repo
+Clone and build the repo:
 ```
 git clone https://github.com/opeik/nodecg.git
 cd nodecg && npm install --production && cd bundles
 git clone https://github.com/opeik/runback.git
 cd runback && yarn install && yarn build
 ```
-Finally, start the NodeCG server
+Start the NodeCG server:
 ```
 cd ../.. && node index.js
 ```
