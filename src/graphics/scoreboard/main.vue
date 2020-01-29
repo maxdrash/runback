@@ -146,14 +146,14 @@ span {
 .name-text-p1 {
   padding-right: 825px;
   animation: fade-in 0.5s linear;
-  animation-delay: 2s;
+  animation-delay: 2.25s;
   animation-fill-mode: forwards;
 }
 
 .name-text-p2 {
   padding-left: 800px;
   animation: fade-in 0.5s linear;
-  animation-delay: 2s;
+  animation-delay: 2.25s;
   animation-fill-mode: forwards;
 }
 
@@ -169,7 +169,7 @@ span {
   padding-top: 5px;
   opacity: 0;
   animation: fade-in 0.5s linear;
-  animation-delay: 2s;
+  animation-delay: 2.25s;
   animation-fill-mode: forwards;
 }
 
@@ -192,7 +192,7 @@ span {
   text-align: center;
   opacity: 0;
   animation: fade-in 0.5s linear;
-  animation-delay: 2s;
+  animation-delay: 2.25s;
   animation-fill-mode: forwards;
 }
 
