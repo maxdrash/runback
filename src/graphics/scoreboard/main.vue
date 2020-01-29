@@ -36,22 +36,34 @@
     </div>
 
     <div class="flex">
-      <span
+      <div
         class="name-text name-text-p1"
         :class="[player1NameUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
                  shouldFadeIn ? 'initial-fade-in' : '']"
         >
-        {{ localPlayer1Name }}
-      </span>
+        <fit-text
+          unit="rem"
+          :min="1"
+          :max="2"
+          >
+          {{ localPlayer1Name }}
+        </fit-text>
+      </div>
     </div>
 
     <div class="flex">
-      <span class="name-text name-text-p2"
+      <div class="name-text name-text-p2"
         :class="[player2NameUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
                  shouldFadeIn ? 'initial-fade-in' : '']"
         >
-        {{ localPlayer2Name }}
-      </span>
+        <fit-text
+          unit="rem"
+          :min="1"
+          :max="2"
+          >
+          {{ localPlayer2Name }}
+        </fit-text>
+      </div>
     </div>
 
     <div class="flex">
@@ -73,12 +85,19 @@
     </div>
 
     <div class="flex">
-      <span class="progress-text"
+      <div class="progress-text"
         :class="[progressUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
                  shouldFadeIn ? 'initial-fade-in' : '']"
         >
-        {{ localProgress }}
-      </span>
+        <fit-text
+          unit="rem"
+          :min="0.5"
+          :max="1.5"
+          >
+          {{ localProgress }}
+        </fit-text>
+
+      </div>
     </div>
 
   </div>
@@ -120,7 +139,7 @@ export default class App extends Vue {
 
   created(): void {
     this.localPlayer1Name = this.player1Name
-    this.localPlayer2Name = this.player1Name
+    this.localPlayer2Name = this.player2Name
     this.localPlayer1Games = this.player1Games
     this.localPlayer2Games = this.player2Games
     this.localProgress = this.progress
@@ -256,7 +275,6 @@ export default class App extends Vue {
   top: 0%;
   height: 50px;
   width: 375px;
-  font-size: 2rem;
   color: white;
   line-height: 50px;
   text-align: center;
@@ -305,7 +323,6 @@ span {
   top: 0%;
   height: 44px;
   width: 260px;
-  font-size: 1.5rem;
   color: white;
   line-height: 44px;
   text-align: center;

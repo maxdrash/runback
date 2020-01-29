@@ -5560,6 +5560,10 @@ vue-eslint-parser@^7.0.0:
     esquery "^1.0.1"
     lodash "^4.17.15"
 
+vue-fit-text@robbeman/vue-fit-text:
+  version "0.0.0"
+  resolved "https://codeload.github.com/robbeman/vue-fit-text/tar.gz/dd8277406cd2c030af58007f94f5e5468fc20884"
+
 vue-hot-reload-api@^2.3.0, vue-hot-reload-api@^2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
