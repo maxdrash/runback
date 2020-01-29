@@ -519,9 +519,6 @@ span {
   100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
 }
 
-
-/* clip-path: polygon(0 0, 75% 0, 100% 100%, 25% 100%); */
-
 @keyframes wipe-left-in-out {
   0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
   50% { clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%) }
