@@ -18,7 +18,7 @@
   * Beautiful overlays
   * Persistant player database
   * Player import and export via JSON
-  * smash.gg integration
+  * smash.gg integration (soon!)
 
 ## Installation
 Ensure Node, npm, and yarn are installed.
