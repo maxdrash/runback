@@ -36,32 +36,48 @@
     </div>
 
     <div class="flex">
-      <span class="name-text name-text-p1">
-        {{ playerGamerTag(0) }}
+      <span
+        class="name-text name-text-p1"
+        :class="[player1NameUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
+                 shouldFadeIn ? 'initial-fade-in' : '']"
+        >
+        {{ localPlayer1Name }}
       </span>
     </div>
 
     <div class="flex">
-      <span class="name-text name-text-p2">
-        {{ playerGamerTag(1) }}
+      <span class="name-text name-text-p2"
+        :class="[player2NameUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
+                 shouldFadeIn ? 'initial-fade-in' : '']"
+        >
+        {{ localPlayer2Name }}
       </span>
     </div>
 
     <div class="flex">
-      <span class="score-text score-text-p1">
-        {{ scoreboard[0].games }}
+      <span class="score-text score-text-p1"
+        :class="[player1GamesUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
+                 shouldFadeIn ? 'initial-fade-in' : '']"
+        >
+        {{ localPlayer1Games }}
       </span>
     </div>
 
     <div class="flex">
-      <span class="score-text score-text-p2">
-        {{ scoreboard[1].games }}
+      <span class="score-text score-text-p2"
+        :class="[player2GamesUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
+                 shouldFadeIn ? 'initial-fade-in' : '']"
+        >
+        {{ localPlayer2Games }}
       </span>
     </div>
 
     <div class="flex">
-      <span class="progress-text">
-        {{ progress() }}
+      <span class="progress-text"
+        :class="[progressUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
+                 shouldFadeIn ? 'initial-fade-in' : '']"
+        >
+        {{ localProgress }}
       </span>
     </div>
 
@@ -69,7 +85,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import { State } from 'vuex-class';
 import { Players } from "schemas/players"
 import { Scoreboard } from "schemas/scoreboard"
@@ -83,14 +99,123 @@ export default class App extends Vue {
   @State("scoreboard") scoreboardState!: Scoreboard
   @State("bracket") bracketState!: Bracket
 
+  shouldFadeIn: boolean = true
+  shouldHide: boolean = true
+
+  localPlayer1Name: string = ""
+  localPlayer2Name: string = ""
+  localPlayer1Games: number = 0
+  localPlayer2Games: number = 0
+  localProgress: string = ""
+
+  player1NameUpdating: boolean = false
+  player2NameUpdating: boolean = false
+  player1GamesUpdating: boolean = false
+  player2GamesUpdating: boolean = false
+  progressUpdating: boolean = false
+
   readonly progressList: Array<{text: string, value: number}> = BRACKET_RULES.progressList
   readonly sideList: Array<{text: string, value: number}> = BRACKET_RULES.sideList
   readonly finalsList: Array<{text: string, value: number}> = BRACKET_RULES.finalsList
 
-  playerGamerTag(playerIndex: number): string {
+  created(): void {
+    this.localPlayer1Name = this.player1Name
+    this.localPlayer2Name = this.player1Name
+    this.localPlayer1Games = this.player1Games
+    this.localPlayer2Games = this.player2Games
+    this.localProgress = this.progress
+
+    setTimeout(() => {
+      this.shouldHide = false
+      this.shouldFadeIn = false
+    }, 3000);
+  }
+
+  playerName(playerIndex: number): string {
     return this.scoreboard[playerIndex].shouldOverride ?
       this.scoreboard[playerIndex].gamerTagOverride :
       this.players[this.scoreboard[playerIndex].playerId].gamerTag
+  }
+
+  get player1Name(): string {
+    return this.playerName(0)
+  }
+
+  get player2Name(): string {
+    return this.playerName(1)
+  }
+
+  get player1Games(): number {
+    return this.scoreboard[0].games
+  }
+
+  get player2Games(): number {
+    return this.scoreboard[1].games
+  }
+
+  @Watch("player1Name")
+  player1NameChanged(newVal: string, oldVal: string): void {
+    this.player1NameUpdating = true
+
+    setTimeout(() => {
+      this.localPlayer1Name = newVal
+    }, 500);
+
+    setTimeout(() => {
+      this.player1NameUpdating = false
+    }, 1500);
+  }
+
+  @Watch("player2Name")
+  player2NameChanged(newVal: string, oldVal: string): void {
+    this.player2NameUpdating = true
+
+    setTimeout(() => {
+      this.localPlayer2Name = newVal
+    }, 500);
+
+    setTimeout(() => {
+      this.player2NameUpdating = false
+    }, 1500);
+  }
+
+  @Watch("player1Games")
+  player1GamesChanged(newVal: number, oldVal: number): void {
+    this.player1GamesUpdating = true
+
+    setTimeout(() => {
+      this.localPlayer1Games = newVal
+    }, 500);
+
+    setTimeout(() => {
+      this.player1GamesUpdating = false
+    }, 1500);
+  }
+
+  @Watch("player2Games")
+  player2GamesChanged(newVal: number, oldVal: number): void {
+    this.player2GamesUpdating = true
+
+    setTimeout(() => {
+      this.localPlayer2Games = newVal
+    }, 500);
+
+    setTimeout(() => {
+      this.player2GamesUpdating = false
+    }, 1500);
+  }
+
+  @Watch("progress")
+  progressChanged(newVal: string, oldVal: string): void {
+    this.progressUpdating = true
+
+    setTimeout(() => {
+      this.localProgress = newVal
+    }, 500);
+
+    setTimeout(() => {
+      this.progressUpdating = false
+    }, 1500);
   }
 
   playerCountry(playerIndex: number): string {
@@ -99,7 +224,7 @@ export default class App extends Vue {
       this.players[this.scoreboard[playerIndex].playerId].country
   }
 
-  progress(): string {
+  get progress(): string {
     return this.bracket.shouldOverrideProgress ?
       this.bracket.customProgress :
       this.progressList[this.bracket.progress - 1].text
@@ -135,7 +260,6 @@ export default class App extends Vue {
   color: white;
   line-height: 50px;
   text-align: center;
-  opacity: 0;
 }
 
 span {
@@ -143,18 +267,17 @@ span {
   font-weight: 300;
 }
 
+.text-update-ani {
+  opacity: 1;
+  animation: fade-out-in 1s linear forwards !important;
+}
+
 .name-text-p1 {
   padding-right: 825px;
-  animation: fade-in 0.5s linear;
-  animation-delay: 2.25s;
-  animation-fill-mode: forwards;
 }
 
 .name-text-p2 {
   padding-left: 800px;
-  animation: fade-in 0.5s linear;
-  animation-delay: 2.25s;
-  animation-fill-mode: forwards;
 }
 
 .score-text {
@@ -167,10 +290,6 @@ span {
   line-height: 50px;
   text-align: center;
   padding-top: 5px;
-  opacity: 0;
-  animation: fade-in 0.5s linear;
-  animation-delay: 2.25s;
-  animation-fill-mode: forwards;
 }
 
 .score-text-p1 {
@@ -190,10 +309,6 @@ span {
   color: white;
   line-height: 44px;
   text-align: center;
-  opacity: 0;
-  animation: fade-in 0.5s linear;
-  animation-delay: 2.25s;
-  animation-fill-mode: forwards;
 }
 
 .main {
@@ -301,34 +416,40 @@ span {
   animation-delay: 1.5s;
 }
 
-@keyframes slide-down {
-  0% { top: -30%; }
-  100% { top: 0%; }
+.hidden {
+  opacity: 0;
 }
 
-@keyframes slide-right {
-  0% { left: 200px; }
-  100% { left: 0%; }
+.initial-fade-in {
+  animation: fade-in 0.5s linear forwards;
+  animation-delay: 2.25s;
+}
+
+@keyframes slide-down {
+  0% { top: -30% }
+  100% { top: 0% }
 }
 
 @keyframes wipe-left {
-  0% { clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%); }
-  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  0% { clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%) }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
 }
 
 @keyframes wipe-right {
-  0% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
-  100% { clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%); }
+  0% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%) }
+  100% { clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) }
 }
 
-
 @keyframes fade-in {
-  0% {
-    opacity:0
-  }
-  100% {
-    opacity:1;
-  }
+  0% { opacity: 0 }
+  100% { opacity: 1 }
+}
+
+@keyframes fade-out-in {
+  0% { opacity: 1 }
+  40% { opacity: 0 }
+  60% { opacity: 0 }
+  100% { opacity: 1 }
 }
 
 </style>
