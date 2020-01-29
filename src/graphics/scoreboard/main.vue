@@ -519,6 +519,9 @@ span {
   100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
 }
 
+
+/* clip-path: polygon(0 0, 75% 0, 100% 100%, 25% 100%); */
+
 @keyframes wipe-left-in-out {
   0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
   50% { clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%) }
@@ -543,8 +546,8 @@ span {
 
 @keyframes fade-out-in {
   0% { opacity: 1 }
-  40% { opacity: 0 }
-  60% { opacity: 0 }
+  35% { opacity: 0 }
+  65% { opacity: 0 }
   100% { opacity: 1 }
 }
 
