@@ -3,7 +3,7 @@ import { ReplicantBrowser } from "nodecg/types/browser"
 import Vue from "vue"
 import Vuex, { Store } from "vuex"
 
-import { Player, Players, Scoreboard } from "schemas"
+import { Player, Players, Scoreboard, Bracket } from "schemas"
 
 Vue.use(Vuex)
 
@@ -11,16 +11,27 @@ Vue.use(Vuex)
 const reps: {
   players: ReplicantBrowser<Players>
   scoreboard: ReplicantBrowser<Scoreboard>
+  bracket: ReplicantBrowser<Bracket>
   [k: string]: ReplicantBrowser<unknown>
 } = {
   players: nodecg.Replicant("players"),
   scoreboard: nodecg.Replicant("scoreboard"),
+  bracket: nodecg.Replicant("bracket"),
+}
+
+const defaultBracket: Bracket = {
+  side: 1,
+  progress: 1,
+  finals: 1,
+  customProgress: "",
+  shouldOverrideProgress: false
 }
 
 const store = new Vuex.Store({
   state: {
     players: [] as Players,
     scoreboard: [] as Scoreboard,
+    bracket: defaultBracket,
   },
   mutations: {
     setState(state, { name, val }): void {
@@ -37,7 +48,8 @@ Object.keys(reps).forEach((key) => {
 })
 
 export default async function (): Promise<Store<{ players: Players,
-                                                  scoreboard: Scoreboard }>> {
+                                                  scoreboard: Scoreboard,
+                                                  bracket: Bracket }>> {
   return NodeCG.waitForReplicants(
     ...Object.keys(reps).map((key) => reps[key]),
   ).then(() => store)

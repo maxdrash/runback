@@ -3,6 +3,7 @@
 import Vue from "vue";
 import App from "./main.vue";
 import waitForReplicants from "./store";
+import "@/dashboard/_misc/fonts/roboto.css";
 
 waitForReplicants().then((store) => {
   new Vue({

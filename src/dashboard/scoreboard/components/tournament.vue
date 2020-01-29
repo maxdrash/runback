@@ -128,8 +128,8 @@ export default class Tournament extends Vue {
     return this.progress !== grandFinals
   }
 
-  readonly progressList: Array<{name: string, value: number}> = BRACKET_RULES.progressList
-  readonly sideList: Array<{name: string, value: number}> = BRACKET_RULES.sideList
-  readonly finalsList: Array<{name: string, value: number}> = BRACKET_RULES.finalsList
+  readonly progressList: Array<{text: string, value: number}> = BRACKET_RULES.progressList
+  readonly sideList: Array<{text: string, value: number}> = BRACKET_RULES.sideList
+  readonly finalsList: Array<{text: string, value: number}> = BRACKET_RULES.finalsList
 }
 </script>

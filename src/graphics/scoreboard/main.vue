@@ -1,5 +1,7 @@
 <template>
   <div class="base">
+    <link rel="stylesheet" type="text/css" href="">
+
     <div class="flex">
       <img src="./img/main.svg" class="main main-ani">
       <img src="./img/back.svg" class="back">
@@ -20,7 +22,7 @@
     <div class="flex">
       <div class="flag-wrapper flag-wrapper-p1 flag-p1">
         <div class="flag-mask flag-mask-p1">
-          <img :src="flagPath('au')" class="flag">
+          <img :src="flagPath(playerCountry(0))" class="flag">
         </div>
       </div>
     </div>
@@ -28,9 +30,39 @@
     <div class="flex">
       <div class="flag-wrapper flag-wrapper-p2 flag-p2">
         <div class="flag-mask flag-mask-p2">
-          <img :src="flagPath('rs')" class="flag">
+          <img :src="flagPath(playerCountry(1))" class="flag">
         </div>
       </div>
+    </div>
+
+    <div class="flex">
+      <span class="name-text name-text-p1">
+        {{ playerGamerTag(0) }}
+      </span>
+    </div>
+
+    <div class="flex">
+      <span class="name-text name-text-p2">
+        {{ playerGamerTag(1) }}
+      </span>
+    </div>
+
+    <div class="flex">
+      <span class="score-text score-text-p1">
+        {{ scoreboard[0].games }}
+      </span>
+    </div>
+
+    <div class="flex">
+      <span class="score-text score-text-p2">
+        {{ scoreboard[1].games }}
+      </span>
+    </div>
+
+    <div class="flex">
+      <span class="progress-text">
+        {{ progress() }}
+      </span>
     </div>
 
   </div>
@@ -41,11 +73,37 @@ import { Vue, Component } from 'vue-property-decorator';
 import { State } from 'vuex-class';
 import { Players } from "schemas/players"
 import { Scoreboard } from "schemas/scoreboard"
+import { Bracket } from "schemas/bracket"
+
+const BRACKET_RULES = require("@/rules/bracket.json")
 
 @Component
 export default class App extends Vue {
   @State("players") playersState!: Players
   @State("scoreboard") scoreboardState!: Scoreboard
+  @State("bracket") bracketState!: Bracket
+
+  readonly progressList: Array<{text: string, value: number}> = BRACKET_RULES.progressList
+  readonly sideList: Array<{text: string, value: number}> = BRACKET_RULES.sideList
+  readonly finalsList: Array<{text: string, value: number}> = BRACKET_RULES.finalsList
+
+  playerGamerTag(playerIndex: number): string {
+    return this.scoreboard[playerIndex].shouldOverride ?
+      this.scoreboard[playerIndex].gamerTagOverride :
+      this.players[this.scoreboard[playerIndex].playerId].gamerTag
+  }
+
+  playerCountry(playerIndex: number): string {
+    return this.scoreboard[playerIndex].shouldOverride ?
+      this.scoreboard[playerIndex].countryOverride :
+      this.players[this.scoreboard[playerIndex].playerId].country
+  }
+
+  progress(): string {
+    return this.bracket.shouldOverrideProgress ?
+      this.bracket.customProgress :
+      this.progressList[this.bracket.progress - 1].text
+  }
 
   get players(): Players {
     return this.playersState
@@ -53,6 +111,10 @@ export default class App extends Vue {
 
   get scoreboard(): Scoreboard {
     return this.scoreboardState
+  }
+
+  get bracket(): Bracket {
+    return this.bracketState
   }
 
   flagPath(country: string): string {
@@ -63,6 +125,76 @@ export default class App extends Vue {
 </script>
 
 <style>
+
+.name-text {
+  position: absolute;
+  top: 0%;
+  height: 50px;
+  width: 375px;
+  font-size: 2rem;
+  color: white;
+  line-height: 50px;
+  text-align: center;
+  opacity: 0;
+}
+
+span {
+  font-family: "Roboto";
+  font-weight: 300;
+}
+
+.name-text-p1 {
+  padding-right: 825px;
+  animation: fade-in 0.5s linear;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+.name-text-p2 {
+  padding-left: 800px;
+  animation: fade-in 0.5s linear;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+.score-text {
+  position: absolute;
+  top: 0%;
+  height: 50px;
+  width: 50px;
+  font-size: 3rem;
+  color: white;
+  line-height: 50px;
+  text-align: center;
+  padding-top: 5px;
+  opacity: 0;
+  animation: fade-in 0.5s linear;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+.score-text-p1 {
+  padding-right: 330px;
+}
+
+.score-text-p2 {
+  padding-left: 330px;
+}
+
+.progress-text {
+  position: absolute;
+  top: 0%;
+  height: 44px;
+  width: 260px;
+  font-size: 1.5rem;
+  color: white;
+  line-height: 44px;
+  text-align: center;
+  opacity: 0;
+  animation: fade-in 0.5s linear;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
 
 .main {
   position: absolute;
@@ -138,17 +270,17 @@ export default class App extends Vue {
 
 .flag-p1 {
   padding-right: 1350px;
-  animation: wipe-left 1s ease-in-out forwards;
+  animation: wipe-left 1.5s forwards;
   transform:translate3d(0,0,0);
-  animation-delay: 1.5s;
+  animation-delay: 1.35s;
   clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%);
 }
 
 .flag-p2 {
   padding-left: 1350px;
-  animation: wipe-right 1s ease-in-out forwards;
+  animation: wipe-right 1.5s ease forwards;
   transform:translate3d(0,0,0);
-  animation-delay: 1.5s;
+  animation-delay: 1.35s;
   clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%);
 }
 
@@ -170,8 +302,13 @@ export default class App extends Vue {
 }
 
 @keyframes slide-down {
-  0% { top: -30% }
-  100% { top: 0% }
+  0% { top: -30%; }
+  100% { top: 0%; }
+}
+
+@keyframes slide-right {
+  0% { left: 200px; }
+  100% { left: 0%; }
 }
 
 @keyframes wipe-left {
@@ -182,6 +319,16 @@ export default class App extends Vue {
 @keyframes wipe-right {
   0% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
   100% { clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%); }
+}
+
+
+@keyframes fade-in {
+  0% {
+    opacity:0
+  }
+  100% {
+    opacity:1;
+  }
 }
 
 </style>
