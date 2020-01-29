@@ -338,7 +338,7 @@ span {
 
 .text-update-ani {
   opacity: 1;
-  animation: fade-out-in 1s linear forwards !important;
+  animation: fade-out-in 1s linear forwards;
 }
 
 .name-text-p1 {
