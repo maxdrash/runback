@@ -20,17 +20,24 @@
     </div>
 
     <div class="flex">
-      <div class="flag-wrapper flag-wrapper-p1 flag-p1">
+      <div
+        class="flag-wrapper flag-wrapper-p1 flag-p1"
+        :class="[player1CountryUpdating ? 'flag-update-p1' : '', shouldHideFlag ? 'flag-hidden': '',
+                 shouldFadeInFlag ? 'flag-initial-wipe-p1' : '']"
+        >
         <div class="flag-mask flag-mask-p1">
-          <img :src="flagPath(playerCountry(0))" class="flag">
+          <img :src="flagPath(localPlayer1Country)" class="flag">
         </div>
       </div>
     </div>
 
     <div class="flex">
-      <div class="flag-wrapper flag-wrapper-p2 flag-p2">
+      <div class="flag-wrapper flag-wrapper-p2 flag-p2"
+        :class="[player2CountryUpdating ? 'flag-update-p2' : '', shouldHideFlag ? 'flag-hidden': '',
+                 shouldFadeInFlag ? 'flag-initial-wipe-p2' : '']"
+        >
         <div class="flag-mask flag-mask-p2">
-          <img :src="flagPath(playerCountry(1))" class="flag">
+          <img :src="flagPath(localPlayer2Country)" class="flag">
         </div>
       </div>
     </div>
@@ -104,8 +111,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import { State } from 'vuex-class';
+import { Vue, Component, Watch } from 'vue-property-decorator'
+import { State } from 'vuex-class'
 import { Players } from "schemas/players"
 import { Scoreboard } from "schemas/scoreboard"
 import { Bracket } from "schemas/bracket"
@@ -119,18 +126,24 @@ export default class App extends Vue {
   @State("bracket") bracketState!: Bracket
 
   shouldFadeIn: boolean = true
+  shouldFadeInFlag: boolean = true
   shouldHide: boolean = true
+  shouldHideFlag: boolean = true
 
   localPlayer1Name: string = ""
   localPlayer2Name: string = ""
   localPlayer1Games: number = 0
   localPlayer2Games: number = 0
+  localPlayer1Country: string = ""
+  localPlayer2Country: string = ""
   localProgress: string = ""
 
   player1NameUpdating: boolean = false
   player2NameUpdating: boolean = false
   player1GamesUpdating: boolean = false
   player2GamesUpdating: boolean = false
+  player1CountryUpdating: boolean = false
+  player2CountryUpdating: boolean = false
   progressUpdating: boolean = false
 
   readonly progressList: Array<{text: string, value: number}> = BRACKET_RULES.progressList
@@ -142,12 +155,16 @@ export default class App extends Vue {
     this.localPlayer2Name = this.player2Name
     this.localPlayer1Games = this.player1Games
     this.localPlayer2Games = this.player2Games
+    this.localPlayer1Country = this.player1Country
+    this.localPlayer2Country = this.player2Country
     this.localProgress = this.progress
 
     setTimeout(() => {
       this.shouldHide = false
+      this.shouldHideFlag = false
       this.shouldFadeIn = false
-    }, 3000);
+      this.shouldFadeInFlag = false
+    }, 3000)
   }
 
   playerName(playerIndex: number): string {
@@ -178,11 +195,11 @@ export default class App extends Vue {
 
     setTimeout(() => {
       this.localPlayer1Name = newVal
-    }, 500);
+    }, 500)
 
     setTimeout(() => {
       this.player1NameUpdating = false
-    }, 1500);
+    }, 1000)
   }
 
   @Watch("player2Name")
@@ -191,11 +208,11 @@ export default class App extends Vue {
 
     setTimeout(() => {
       this.localPlayer2Name = newVal
-    }, 500);
+    }, 500)
 
     setTimeout(() => {
       this.player2NameUpdating = false
-    }, 1500);
+    }, 1000)
   }
 
   @Watch("player1Games")
@@ -204,11 +221,11 @@ export default class App extends Vue {
 
     setTimeout(() => {
       this.localPlayer1Games = newVal
-    }, 500);
+    }, 500)
 
     setTimeout(() => {
       this.player1GamesUpdating = false
-    }, 1500);
+    }, 1000)
   }
 
   @Watch("player2Games")
@@ -217,11 +234,11 @@ export default class App extends Vue {
 
     setTimeout(() => {
       this.localPlayer2Games = newVal
-    }, 500);
+    }, 500)
 
     setTimeout(() => {
       this.player2GamesUpdating = false
-    }, 1500);
+    }, 1000)
   }
 
   @Watch("progress")
@@ -230,17 +247,51 @@ export default class App extends Vue {
 
     setTimeout(() => {
       this.localProgress = newVal
-    }, 500);
+    }, 500)
 
     setTimeout(() => {
       this.progressUpdating = false
-    }, 1500);
+    }, 1000)
   }
 
   playerCountry(playerIndex: number): string {
     return this.scoreboard[playerIndex].shouldOverride ?
       this.scoreboard[playerIndex].countryOverride :
       this.players[this.scoreboard[playerIndex].playerId].country
+  }
+
+  @Watch("player1Country")
+  player1CountryChanged(newVal: string, oldVal: string): void {
+    this.player1CountryUpdating = true
+
+    setTimeout(() => {
+      this.localPlayer1Country = newVal
+    }, 500)
+
+    setTimeout(() => {
+      this.player1CountryUpdating = false
+    }, 1500)
+  }
+
+  @Watch("player2Country")
+  player2CountryChanged(newVal: string, oldVal: string): void {
+    this.player2CountryUpdating = true
+
+    setTimeout(() => {
+      this.localPlayer2Country = newVal
+    }, 500)
+
+    setTimeout(() => {
+      this.player2CountryUpdating = false
+    }, 1500)
+  }
+
+  get player1Country(): string {
+   return this.playerCountry(0)
+  }
+
+  get player2Country(): string {
+   return this.playerCountry(1)
   }
 
   get progress(): string {
@@ -400,20 +451,36 @@ span {
   clip-path: polygon(25% 0, 100% 0, 75% 100%, 0 100%);
 }
 
-.flag-p1 {
-  padding-right: 1350px;
+.flag-initial-wipe-p1 {
   animation: wipe-left 1.5s forwards;
   transform:translate3d(0,0,0);
   animation-delay: 1.35s;
+}
+
+.flag-initial-wipe-p2 {
+  animation: wipe-right 1.5s forwards;
+  transform:translate3d(0,0,0);
+  animation-delay: 1.35s;
+}
+
+.flag-hidden {
   clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%);
+}
+
+.flag-update-p1 {
+  animation: wipe-left-in-out 1s cubic-bezier(1, 0, 0, 1) forwards;
+}
+
+.flag-update-p2 {
+  animation: wipe-right-in-out 1s cubic-bezier(1, 0, 0, 1) forwards;
+}
+
+.flag-p1 {
+  padding-right: 1350px;
 }
 
 .flag-p2 {
   padding-left: 1350px;
-  animation: wipe-right 1.5s ease forwards;
-  transform:translate3d(0,0,0);
-  animation-delay: 1.35s;
-  clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%);
 }
 
 .main-ani {
@@ -450,6 +517,18 @@ span {
 @keyframes wipe-left {
   0% { clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%) }
   100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
+}
+
+@keyframes wipe-left-in-out {
+  0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
+  50% { clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%) }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
+}
+
+@keyframes wipe-right-in-out {
+  0% { clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) }
+  50% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%) }
+  100% { clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) }
 }
 
 @keyframes wipe-right {
