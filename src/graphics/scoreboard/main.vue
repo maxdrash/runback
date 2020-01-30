@@ -22,7 +22,7 @@
     <div class="flex">
       <div
         class="flag-wrapper flag-wrapper-p1 flag-p1"
-        :class="[player1CountryUpdating ? 'flag-update-p1' : '', shouldHideFlag ? 'flag-hidden': '',
+        :class="[player1CountryUpdating ? 'flag-update-p1' : '', shouldHideFlag ? 'hidden': '',
                  shouldFadeInFlag ? 'flag-initial-wipe-p1' : '']"
         >
         <div class="flag-mask flag-mask-p1">
@@ -33,7 +33,7 @@
 
     <div class="flex">
       <div class="flag-wrapper flag-wrapper-p2 flag-p2"
-        :class="[player2CountryUpdating ? 'flag-update-p2' : '', shouldHideFlag ? 'flag-hidden': '',
+        :class="[player2CountryUpdating ? 'flag-update-p2' : '', shouldHideFlag ? 'hidden': '',
                  shouldFadeInFlag ? 'flag-initial-wipe-p2' : '']"
         >
         <div class="flag-mask flag-mask-p2">
@@ -160,8 +160,11 @@ export default class App extends Vue {
     this.localProgress = this.progress
 
     setTimeout(() => {
-      this.shouldHide = false
       this.shouldHideFlag = false
+    }, 2200)
+
+    setTimeout(() => {
+      this.shouldHide = false
       this.shouldFadeIn = false
       this.shouldFadeInFlag = false
     }, 3000)
@@ -435,6 +438,7 @@ span {
   padding: 10px;
   margin: -10px;
   filter: drop-shadow(0px 2px 5px #222);
+  z-index: -3;
 }
 
 .flag {
@@ -452,35 +456,53 @@ span {
 }
 
 .flag-initial-wipe-p1 {
-  animation: wipe-left 1.5s forwards;
+  animation: flag-slide-left 1s forwards;
   transform:translate3d(0,0,0);
-  animation-delay: 1.35s;
+  animation-delay: 2s;
 }
 
 .flag-initial-wipe-p2 {
-  animation: wipe-right 1.5s forwards;
+  animation: flag-slide-right 1s forwards;
   transform:translate3d(0,0,0);
-  animation-delay: 1.35s;
+  animation-delay: 2s;
 }
 
-.flag-hidden {
-  clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%);
+@keyframes flag-slide-left {
+  0% { padding-right: 850px }
+  100% { padding-right: 1395px }
+}
+
+@keyframes flag-slide-right {
+  0% { padding-left: 895px }
+  100% { padding-left: 1440px }
+}
+
+@keyframes flag-slide-left-in-out {
+  0% { padding-right: 1395px }
+  50% { padding-right: 1200px }
+  100% { padding-right: 1395px }
+}
+
+@keyframes flag-slide-right-in-out {
+  0% { padding-left: 1440px }
+  50% { padding-left: 1230px }
+  100% { padding-left: 1440px }
 }
 
 .flag-update-p1 {
-  animation: wipe-left-in-out 1s cubic-bezier(1, 0, 0, 1) forwards;
+  animation: flag-slide-left-in-out 1s forwards;
 }
 
 .flag-update-p2 {
-  animation: wipe-right-in-out 1s cubic-bezier(1, 0, 0, 1) forwards;
+  animation: flag-slide-right-in-out 1s forwards;
 }
 
 .flag-p1 {
-  padding-right: 1350px;
+  padding-right: 1395px;
 }
 
 .flag-p2 {
-  padding-left: 1350px;
+  padding-left: 1440px;
 }
 
 .main-ani {
@@ -517,18 +539,6 @@ span {
 @keyframes wipe-left {
   0% { clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%) }
   100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
-}
-
-@keyframes wipe-left-in-out {
-  0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
-  50% { clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%) }
-  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
-}
-
-@keyframes wipe-right-in-out {
-  0% { clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) }
-  50% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%) }
-  100% { clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) }
 }
 
 @keyframes wipe-right {
