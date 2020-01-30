@@ -437,7 +437,6 @@ span {
   top: 0%;
   padding: 10px;
   margin: -10px;
-  filter: drop-shadow(0px 2px 5px #222);
   z-index: -3;
 }
 
