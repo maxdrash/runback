@@ -473,7 +473,7 @@ span {
 
 @keyframes flag-slide-right {
   0% { padding-left: 895px }
-  100% { padding-left: 1440px }
+  100% { padding-left: 1435px }
 }
 
 @keyframes flag-slide-left-in-out {
@@ -483,9 +483,9 @@ span {
 }
 
 @keyframes flag-slide-right-in-out {
-  0% { padding-left: 1440px }
+  0% { padding-left: 1435px }
   50% { padding-left: 1230px }
-  100% { padding-left: 1440px }
+  100% { padding-left: 1435px }
 }
 
 .flag-update-p1 {
@@ -501,7 +501,7 @@ span {
 }
 
 .flag-p2 {
-  padding-left: 1440px;
+  padding-left: 1435px;
 }
 
 .main-ani {
