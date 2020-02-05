@@ -1,112 +1,92 @@
 <template>
-  <div class="base">
-    <link rel="stylesheet" type="text/css" href="">
-
-    <div class="flex">
-      <img src="./img/main.svg" class="main main-ani">
-      <img src="./img/back.svg" class="back">
+  <div id="scoreboard">
+    <div id="back-panel-wrapper">
+      <img id="back-panel" src="./img/back.svg">
     </div>
 
-    <div class="flex">
-      <div class="name-wrapper name-wrapper-p1">
-        <img src="./img/name1.svg" class="name name-p1 name-ani-p1">
+    <div id="main-panel-wrapper">
+      <img id="main-panel" src="./img/main.svg">
+
+      <div id="progress-wrapper">
+          <fit-text id="progress-text"
+            unit="rem"
+            :min="1.5"
+            :max="progressTextFontSize()"
+            >
+            {{ local.progress }}
+          </fit-text>
       </div>
-    </div>
 
-    <div class="flex">
-      <div class="name-wrapper name-wrapper-p2">
-        <img src="./img/name2.svg" class="name name-p2 name-ani-p2">
+      <div id="p1-games-text-wrapper" class="games-text-wrapper">
+        <span class="games-text">
+          {{ local.p1.games }}
+        </span>
       </div>
-    </div>
 
-    <div class="flex">
-      <div
-        class="flag-wrapper flag-wrapper-p1 flag-p1"
-        :class="[player1CountryUpdating ? 'flag-update-p1' : '', shouldHideFlag ? 'hidden': '',
-                 shouldFadeInFlag ? 'flag-initial-wipe-p1' : '']"
-        >
-        <div class="flag-mask flag-mask-p1">
-          <img :src="flagPath(localPlayer1Country)" class="flag">
+      <div id="p2-games-text-wrapper" class="games-text-wrapper">
+        <span class="games-text">
+          {{ local.p2.games }}
+        </span>
+      </div>
+
+      <div id="p1-name-wrapper" class="name-wrapper">
+        <img src="./img/name1.svg">
+
+        <div id="p1-name-text-wrapper" class="name-text-wrapper">
+
+          <fit-text
+            unit="rem"
+            :min="1"
+            :max="nameTextFontSize(0)"
+            >
+
+            <span class="team-text">
+              {{ local.p1.team }}
+            </span>
+
+            <span class="gamertag-text">
+              {{ local.p1.gamerTag }}
+            </span>
+          </fit-text>
+
+        </div>
+
+        <div id="p1-flag-wrapper" class="flag-wrapper">
+          <div class="flag-mask">
+            <img class="flag" :src="flagPath(local.p1.country)">
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="flex">
-      <div class="flag-wrapper flag-wrapper-p2 flag-p2"
-        :class="[player2CountryUpdating ? 'flag-update-p2' : '', shouldHideFlag ? 'hidden': '',
-                 shouldFadeInFlag ? 'flag-initial-wipe-p2' : '']"
-        >
-        <div class="flag-mask flag-mask-p2">
-          <img :src="flagPath(localPlayer2Country)" class="flag">
+      <div id="p2-name-wrapper" class="name-wrapper">
+        <img src="./img/name2.svg">
+        <div id="p2-name-text-wrapper" class="name-text-wrapper">
+
+          <fit-text class="team-text"
+            unit="rem"
+            :min="1"
+            :max="nameTextFontSize(1)"
+            >
+            <span class="team-text">
+              {{ local.p2.team }}
+            </span>
+
+            <span class="gamertag-text">
+              {{ local.p2.gamerTag }}
+            </span>
+          </fit-text>
+
         </div>
-      </div>
-    </div>
 
-    <div class="flex">
-      <div
-        class="name-text name-text-p1"
-        :class="[player1NameUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
-                 shouldFadeIn ? 'initial-fade-in' : '']"
-        >
-        <fit-text
-          unit="rem"
-          :min="1"
-          :max="2"
-          >
-          {{ localPlayer1Name }}
-        </fit-text>
-      </div>
-    </div>
-
-    <div class="flex">
-      <div class="name-text name-text-p2"
-        :class="[player2NameUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
-                 shouldFadeIn ? 'initial-fade-in' : '']"
-        >
-        <fit-text
-          unit="rem"
-          :min="1"
-          :max="2"
-          >
-          {{ localPlayer2Name }}
-        </fit-text>
-      </div>
-    </div>
-
-    <div class="flex">
-      <span class="score-text score-text-p1"
-        :class="[player1GamesUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
-                 shouldFadeIn ? 'initial-fade-in' : '']"
-        >
-        {{ localPlayer1Games }}
-      </span>
-    </div>
-
-    <div class="flex">
-      <span class="score-text score-text-p2"
-        :class="[player2GamesUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
-                 shouldFadeIn ? 'initial-fade-in' : '']"
-        >
-        {{ localPlayer2Games }}
-      </span>
-    </div>
-
-    <div class="flex">
-      <div class="progress-text"
-        :class="[progressUpdating ? 'text-update-ani' : '', shouldHide ? 'hidden': '',
-                 shouldFadeIn ? 'initial-fade-in' : '']"
-        >
-        <fit-text
-          unit="rem"
-          :min="0.5"
-          :max="1.5"
-          >
-          {{ localProgress }}
-        </fit-text>
+        <div id="p2-flag-wrapper" class="flag-wrapper">
+          <div class="flag-mask">
+            <img class="flag" :src="flagPath(local.p2.country)">
+          </div>
+        </div>
 
       </div>
-    </div>
 
+    </div>
   </div>
 </template>
 
@@ -125,183 +105,43 @@ export default class App extends Vue {
   @State("scoreboard") scoreboardState!: Scoreboard
   @State("bracket") bracketState!: Bracket
 
-  shouldFadeIn: boolean = true
-  shouldFadeInFlag: boolean = true
-  shouldHide: boolean = true
-  shouldHideFlag: boolean = true
+  local = {
+    progress: "" as string,
 
-  localPlayer1Name: string = ""
-  localPlayer2Name: string = ""
-  localPlayer1Games: number = 0
-  localPlayer2Games: number = 0
-  localPlayer1Country: string = ""
-  localPlayer2Country: string = ""
-  localProgress: string = ""
+    p1: {
+      gamerTag: "" as string,
+      team: "" as string,
+      games: 0 as number,
+      country: "" as string,
 
-  player1NameUpdating: boolean = false
-  player2NameUpdating: boolean = false
-  player1GamesUpdating: boolean = false
-  player2GamesUpdating: boolean = false
-  player1CountryUpdating: boolean = false
-  player2CountryUpdating: boolean = false
-  progressUpdating: boolean = false
+      updating: {
+        name: false as boolean,
+        games: false as boolean,
+        country: false as boolean,
+      }
+    },
+
+    p2: {
+      gamerTag: "" as string,
+      team: "" as string,
+      games: 0 as number,
+      country: "" as string,
+
+      updating: {
+        name: false as boolean,
+        games: false as boolean,
+        country: false as boolean,
+      }
+    }
+  }
+
+  readonly cjkFontSizeRatio = 0.85
+  readonly nameTextFontSizeLatin: number = 2.8
+  readonly progressTextFontSizeLatin: number = 2.1
 
   readonly progressList: Array<{text: string, value: number}> = BRACKET_RULES.progressList
   readonly sideList: Array<{text: string, value: number}> = BRACKET_RULES.sideList
   readonly finalsList: Array<{text: string, value: number}> = BRACKET_RULES.finalsList
-
-  created(): void {
-    this.localPlayer1Name = this.player1Name
-    this.localPlayer2Name = this.player2Name
-    this.localPlayer1Games = this.player1Games
-    this.localPlayer2Games = this.player2Games
-    this.localPlayer1Country = this.player1Country
-    this.localPlayer2Country = this.player2Country
-    this.localProgress = this.progress
-
-    setTimeout(() => {
-      this.shouldHideFlag = false
-    }, 2200)
-
-    setTimeout(() => {
-      this.shouldHide = false
-      this.shouldFadeIn = false
-      this.shouldFadeInFlag = false
-    }, 3000)
-  }
-
-  playerName(playerIndex: number): string {
-    return this.scoreboard[playerIndex].shouldOverride ?
-      this.scoreboard[playerIndex].gamerTagOverride :
-      this.players[this.scoreboard[playerIndex].playerId].gamerTag
-  }
-
-  get player1Name(): string {
-    return this.playerName(0)
-  }
-
-  get player2Name(): string {
-    return this.playerName(1)
-  }
-
-  get player1Games(): number {
-    return this.scoreboard[0].games
-  }
-
-  get player2Games(): number {
-    return this.scoreboard[1].games
-  }
-
-  @Watch("player1Name")
-  player1NameChanged(newVal: string, oldVal: string): void {
-    this.player1NameUpdating = true
-
-    setTimeout(() => {
-      this.localPlayer1Name = newVal
-    }, 500)
-
-    setTimeout(() => {
-      this.player1NameUpdating = false
-    }, 1000)
-  }
-
-  @Watch("player2Name")
-  player2NameChanged(newVal: string, oldVal: string): void {
-    this.player2NameUpdating = true
-
-    setTimeout(() => {
-      this.localPlayer2Name = newVal
-    }, 500)
-
-    setTimeout(() => {
-      this.player2NameUpdating = false
-    }, 1000)
-  }
-
-  @Watch("player1Games")
-  player1GamesChanged(newVal: number, oldVal: number): void {
-    this.player1GamesUpdating = true
-
-    setTimeout(() => {
-      this.localPlayer1Games = newVal
-    }, 500)
-
-    setTimeout(() => {
-      this.player1GamesUpdating = false
-    }, 1000)
-  }
-
-  @Watch("player2Games")
-  player2GamesChanged(newVal: number, oldVal: number): void {
-    this.player2GamesUpdating = true
-
-    setTimeout(() => {
-      this.localPlayer2Games = newVal
-    }, 500)
-
-    setTimeout(() => {
-      this.player2GamesUpdating = false
-    }, 1000)
-  }
-
-  @Watch("progress")
-  progressChanged(newVal: string, oldVal: string): void {
-    this.progressUpdating = true
-
-    setTimeout(() => {
-      this.localProgress = newVal
-    }, 500)
-
-    setTimeout(() => {
-      this.progressUpdating = false
-    }, 1000)
-  }
-
-  playerCountry(playerIndex: number): string {
-    return this.scoreboard[playerIndex].shouldOverride ?
-      this.scoreboard[playerIndex].countryOverride :
-      this.players[this.scoreboard[playerIndex].playerId].country
-  }
-
-  @Watch("player1Country")
-  player1CountryChanged(newVal: string, oldVal: string): void {
-    this.player1CountryUpdating = true
-
-    setTimeout(() => {
-      this.localPlayer1Country = newVal
-    }, 500)
-
-    setTimeout(() => {
-      this.player1CountryUpdating = false
-    }, 1500)
-  }
-
-  @Watch("player2Country")
-  player2CountryChanged(newVal: string, oldVal: string): void {
-    this.player2CountryUpdating = true
-
-    setTimeout(() => {
-      this.localPlayer2Country = newVal
-    }, 500)
-
-    setTimeout(() => {
-      this.player2CountryUpdating = false
-    }, 1500)
-  }
-
-  get player1Country(): string {
-   return this.playerCountry(0)
-  }
-
-  get player2Country(): string {
-   return this.playerCountry(1)
-  }
-
-  get progress(): string {
-    return this.bracket.shouldOverrideProgress ?
-      this.bracket.customProgress :
-      this.progressList[this.bracket.progress - 1].text
-  }
 
   get players(): Players {
     return this.playersState
@@ -315,246 +155,336 @@ export default class App extends Vue {
     return this.bracketState
   }
 
+  gamerTag(playerIndex: number): string {
+    return this.scoreboard[playerIndex].shouldOverride ?
+      this.scoreboard[playerIndex].gamerTagOverride :
+      this.players[this.scoreboard[playerIndex].playerId].gamerTag
+  }
+
+  team(playerIndex: number): string {
+    return this.scoreboard[playerIndex].shouldOverride ?
+      this.scoreboard[playerIndex].teamOverride :
+      this.players[this.scoreboard[playerIndex].playerId].team
+  }
+
+  country(playerIndex: number): string {
+    return this.scoreboard[playerIndex].shouldOverride ?
+      this.scoreboard[playerIndex].countryOverride :
+      this.players[this.scoreboard[playerIndex].playerId].country
+  }
+
+  progress() : string {
+    return this.bracket.shouldOverrideProgress ?
+      this.bracket.customProgress :
+      this.progressList[this.bracket.progress - 1].text
+  }
+
   flagPath(country: string): string {
     return require("@/../node_modules/region-flags/svg/" +
       country.toUpperCase() + ".svg")
+  }
+
+  containsCjkCharacters(s: string): boolean {
+    let regex = new RegExp('[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]')
+    return regex.test(s)
+  }
+
+  nameTextFontSize(playerIndex: number): number {
+    return this.containsCjkCharacters(this.team(playerIndex)) ||
+           this.containsCjkCharacters(this.gamerTag(playerIndex)) ?
+      this.nameTextFontSizeLatin * this.cjkFontSizeRatio :
+      this.nameTextFontSizeLatin
+  }
+
+  progressTextFontSize(): number {
+    return this.containsCjkCharacters(this.progress()) ?
+      this.progressTextFontSizeLatin * this.cjkFontSizeRatio :
+      this.progressTextFontSizeLatin
+  }
+
+  created(): void {
+    this.local.p1.gamerTag = this.gamerTag(0)
+    this.local.p1.team = this.team(0)
+    this.local.p1.games = this.scoreboard[0].games
+    this.local.p1.country = this.country(0)
+
+    this.local.p2.gamerTag = this.gamerTag(1)
+    this.local.p2.team = this.team(1)
+    this.local.p2.games = this.scoreboard[1].games
+    this.local.p2.country = this.country(1)
+
+    this.local.progress = this.progress()
   }
 }
 </script>
 
 <style>
 
-.name-text {
+:root {
+  --main-panel-height: 60px;
+  --main-panel-width: 409.28px;
+
+  --back-panel-height: 50px;
+  --back-panel-width: 596.6px;
+
+  --name-panel-height: 50px;
+  --name-panel-width: 499.19px;
+  --name-panel-offset: calc(var(--name-panel-width) * 0.95 * -1);
+
+  --flag-height: 50px;
+  --flag-width: 120px;
+  --flag-offset: calc(var(--flag-width) * (0.25 + 0.01));
+
+  --name-text-width: calc(var(--name-panel-width) * 0.825);
+  --name-text-height: calc(var(--name-panel-height) * 0.8);
+  --name-text-offset-x: calc(var(--name-panel-width) * 0.075);
+  --name-text-offset-y: calc(var(--name-panel-height) * 0.5 - (var(--name-text-height) * 0.5) );
+
+  --games-text-width: calc(var(--main-panel-width) * 0.15);
+  --games-text-height: calc(var(--main-panel-height) * 0.8);
+  --games-text-offset-x: calc(var(--games-text-width) * 0.125);
+  --games-text-offset-y: calc(var(--main-panel-height) * 0.5 - (var(--games-text-height) * 0.5) );
+
+  --progress-text-width: calc(var(--main-panel-width) * 0.65);
+  --progress-text-height: calc(var(--main-panel-height) * 0.55);
+  --progress-text-offset-x: calc(var(--main-panel-width) * 0.5);
+  --progress-text-offset-y: calc(var(--main-panel-height) * 0.375 - (var(--progress-text-height) * 0.5) );
+}
+
+img {
+  height: 100%;
+}
+
+#scoreboard {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#back-panel-wrapper {
   position: absolute;
-  top: 0%;
-  height: 50px;
-  width: 375px;
-  color: white;
-  line-height: 50px;
-  text-align: center;
+  height: var(--back-panel-height);
+  top: 0;
+  left: 0;
+  z-index: -2;
+  transform: translateX(-50%) translate3d(0,0,0);
+  animation: main-panel-in 0.5s forwards;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  opacity: 0;
 }
 
-span {
-  font-family: "Roboto";
-  font-weight: 300;
-}
-
-.text-update-ani {
-  opacity: 1;
-  animation: fade-out-in 1s linear forwards;
-}
-
-.name-text-p1 {
-  padding-right: 825px;
-}
-
-.name-text-p2 {
-  padding-left: 800px;
-}
-
-.score-text {
-  position: absolute;
-  top: 0%;
-  height: 50px;
-  width: 50px;
-  font-size: 3rem;
-  color: white;
-  line-height: 50px;
-  text-align: center;
-  padding-top: 5px;
-}
-
-.score-text-p1 {
-  padding-right: 330px;
-}
-
-.score-text-p2 {
-  padding-left: 330px;
-}
-
-.progress-text {
-  position: absolute;
-  top: 0%;
-  height: 44px;
-  width: 260px;
-  color: white;
-  line-height: 44px;
-  text-align: center;
-}
-
-.main {
-  position: absolute;
-  top: 0%;
-  height: 60px;
-  z-index: 0;
+#main-panel {
   filter: drop-shadow(0px 5px 5px #222);
 }
 
-.name {
-  height: 50px;
-  z-index: -1;
-  clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%);
+#main-panel-wrapper {
+  position: absolute;
+  height: var(--main-panel-height);
+  top: 0;
+  left: 0;
+  z-index: 0;
+  transform: translateX(-50%);
+  animation: main-panel-in 0.5s forwards;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  animation-delay: 0.15s;
+  opacity: 0;
+}
+
+#progress-wrapper {
+  position: absolute;
+  top: var(--progress-text-offset-y);
+  left: var(--progress-text-offset-x);
+  width: var(--progress-text-width);
+  height: var(--progress-text-height);
+  line-height: var(--progress-text-height);
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+#progress-text {
+  color: white;
+  font-family: "Bebas Neue Regular", "Rounded Mplus Regular";
+}
+
+#p1-name-wrapper {
+  left: var(--name-panel-offset);
+  padding-left: var(--flag-width);
+  margin-left: calc(var(--flag-width) * -1);
+
+  animation: p1-name-in 1s forwards;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  animation-delay: 0.75s;
+}
+
+#p2-name-wrapper {
+  right: var(--name-panel-offset);
+  padding-right: var(--flag-width);
+  margin-right: calc(var(--flag-width) * -1);
+
+  animation: p2-name-in 1s ease-in-out forwards;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  animation-delay: 0.75s;
+}
+
+#p1-flag-wrapper {
+  left: var(--flag-offset);
+  clip-path: polygon(0 0, 75% 0, 100% 100%, 25% 100%);
+
+  animation: p1-flag-in 0.75s ease-in-out forwards;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  animation-delay: 0.9s;
+}
+
+#p2-flag-wrapper {
+  right: var(--flag-offset);
+  clip-path: polygon(25% 0, 100% 0, 75% 100%, 0 100%);
+
+  animation: p2-flag-in 0.75s ease-in-out forwards;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  animation-delay: 0.9s;
+}
+
+#p1-name-text-wrapper {
+  right: var(--name-text-offset-x);
+  text-align: left;
+}
+
+#p2-name-text-wrapper {
+  left: var(--name-text-offset-x);
+  text-align: right;
+}
+
+#p1-games-text-wrapper {
+  left: var(--games-text-offset-x);
+}
+
+#p2-games-text-wrapper {
+  right: var(--games-text-offset-x);
 }
 
 .name-wrapper {
   position: absolute;
-  top: 0%;
-  filter: drop-shadow(0px 2px 5px #222);
-  z-index: -1;
-}
-
-.name-wrapper-p1 {
-  padding-right: 850px;
-}
-
-.name-wrapper-p2 {
-  padding-left: 850px;
-}
-
-.flex {
-  display: flex;
-  justify-content: center;
-}
-
-.back {
-  position: absolute;
-  top: 0%;
-  height: 50px;
+  height: var(--name-panel-height);
+  top: 0;
   z-index: -2;
-  animation: slide-down 0.8s ease-in-out forwards;
-  transform:translate3d(0,0,0);
+  opacity: 0;
+  overflow: visible;
+  padding-bottom: 20px;
+  opacity: 0;
+  filter: drop-shadow(0px 2px 5px #222);
+}
+
+.flag-wrapper {
+  position: absolute;
+  height: var(--flag-height);
+  width: var(--flag-width);
+  top: 0;
+  z-index: -3;
+  opacity: 0;
 }
 
 .flag-mask {
   width: 100%;
-  height: 50px;
-}
-
-.flag-wrapper {
-  width: 120px;
-  height: 70px;
-  position: absolute;
-  top: 0%;
-  padding: 10px;
-  margin: -10px;
-  z-index: -3;
+  height: var(--flag-height);
 }
 
 .flag {
   object-fit: cover;
-  height: 100%;
   width: 100%;
+  height: 100%;
 }
 
-.flag-mask-p1 {
-  clip-path: polygon(0 0, 75% 0, 100% 100%, 25% 100%);
+.name-text-wrapper {
+  position: absolute;
+  top: var(--name-text-offset-y);
+  height: var(--name-text-height);
+  width: var(--name-text-width);
+  line-height: var(--name-text-height);
+  font-family: "Bebas Neue Bold", "Rounded Mplus Bold";
 }
 
-.flag-mask-p2 {
-  clip-path: polygon(25% 0, 100% 0, 75% 100%, 0 100%);
+.games-text-wrapper {
+  position: absolute;
+  top: var(--games-text-offset-y);
+  height: var(--games-text-height);
+  width: var(--games-text-width);
+  text-align: center;
+  line-height: var(--games-text-height);
 }
 
-.flag-initial-wipe-p1 {
-  animation: flag-slide-left 1s forwards;
-  transform:translate3d(0,0,0);
-  animation-delay: 2s;
+.games-text {
+  color: white;
+  font-size: 3.5rem;
+  font-family: "Gilroy";
+  font-weight: bold;
 }
 
-.flag-initial-wipe-p2 {
-  animation: flag-slide-right 1s forwards;
-  transform:translate3d(0,0,0);
-  animation-delay: 2s;
+.team-text {
+  color: gray;
 }
 
-@keyframes flag-slide-left {
-  0% { padding-right: 850px }
-  100% { padding-right: 1395px }
+.gamertag-text {
+  color: white;
 }
 
-@keyframes flag-slide-right {
-  0% { padding-left: 895px }
-  100% { padding-left: 1435px }
+@keyframes main-panel-in {
+  0% {
+    opacity: 1;
+    top: calc(var(--main-panel-height) * -1);
+  }
+  100% {
+    opacity: 1;
+    top: 0px
+  }
 }
 
-@keyframes flag-slide-left-in-out {
-  0% { padding-right: 1395px }
-  50% { padding-right: 1200px }
-  100% { padding-right: 1395px }
+@keyframes p1-name-in {
+  0% {
+    opacity: 1;
+    left: 10%;
+    clip-path: polygon(0 0, 15% 0, 15% 100%, 0 100%);
+  }
+  100% {
+    opacity: 1;
+    left: var(--name-panel-offset);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
 }
 
-@keyframes flag-slide-right-in-out {
-  0% { padding-left: 1435px }
-  50% { padding-left: 1230px }
-  100% { padding-left: 1435px }
+@keyframes p2-name-in {
+  0% {
+    opacity: 1;
+    right: 10%;
+    clip-path: polygon(85% 0, 100% 0, 100% 100%, 85% 100%);
+  }
+  100% {
+    opacity: 1;
+    right: var(--name-panel-offset);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
 }
 
-.flag-update-p1 {
-  animation: flag-slide-left-in-out 1s forwards;
+@keyframes p1-flag-in {
+  0% {
+    opacity: 1;
+    left: var(--flag-width);
+  }
+  100% {
+    opacity: 1;
+    left: var(--flag-offset);
+  }
 }
 
-.flag-update-p2 {
-  animation: flag-slide-right-in-out 1s forwards;
-}
-
-.flag-p1 {
-  padding-right: 1395px;
-}
-
-.flag-p2 {
-  padding-left: 1435px;
-}
-
-.main-ani {
-  animation: slide-down 1s ease-in-out forwards;
-  transform:translate3d(0,0,0);
-}
-
-.name-ani-p1 {
-  animation: wipe-left 1s ease-in-out forwards;
-  transform:translate3d(0,0,0);
-  animation-delay: 1.5s;
-}
-
-.name-ani-p2 {
-  animation: wipe-right 1s ease-in-out forwards;
-  transform:translate3d(0,0,0);
-  animation-delay: 1.5s;
-}
-
-.hidden {
-  opacity: 0;
-}
-
-.initial-fade-in {
-  animation: fade-in 0.5s linear forwards;
-  animation-delay: 2.25s;
-}
-
-@keyframes slide-down {
-  0% { top: -30% }
-  100% { top: 0% }
-}
-
-@keyframes wipe-left {
-  0% { clip-path: polygon(100% 0%, 100% 0, 100% 100%, 100% 100%) }
-  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) }
-}
-
-@keyframes wipe-right {
-  0% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%) }
-  100% { clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) }
-}
-
-@keyframes fade-in {
-  0% { opacity: 0 }
-  100% { opacity: 1 }
-}
-
-@keyframes fade-out-in {
-  0% { opacity: 1 }
-  35% { opacity: 0 }
-  65% { opacity: 0 }
-  100% { opacity: 1 }
+@keyframes p2-flag-in {
+  0% {
+    opacity: 1;
+    right: var(--flag-width);
+  }
+  100% {
+    opacity: 1;
+    right: var(--flag-offset);
+  }
 }
 
 </style>

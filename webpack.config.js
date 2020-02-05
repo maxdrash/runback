@@ -115,7 +115,7 @@ const config = (name) => {
           ],
         },
         {
-          test: /\.(woff(2)?|ttf|eot)$/,
+          test: /\.(woff(2)?|ttf|otf|eot)$/,
           loader: 'file-loader',
           options: {
             name: 'font/[name].[ext]',
