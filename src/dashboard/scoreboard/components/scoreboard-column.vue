@@ -113,7 +113,8 @@
             <v-checkbox
               class="mt-5 ml-n4"
               v-model="localScore.shouldOverride"
-              @change="setShouldOverride({playerIndex: playerIndex, shouldOverride: localScore.shouldOverride})"
+              @change="setShouldOverride({playerIndex: playerIndex,
+                       shouldOverride: localScore.shouldOverride})"
               ></v-checkbox>
           </v-col>
         </v-row>

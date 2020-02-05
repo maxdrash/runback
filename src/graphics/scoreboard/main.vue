@@ -1,10 +1,16 @@
 <template>
   <div id="scoreboard">
-    <div id="back-panel-wrapper">
+    <div
+      id="back-panel-wrapper"
+      :class="entering.main ? 'back-in main-initial' : ''"
+      >
       <img id="back-panel" src="./img/back.svg">
     </div>
 
-    <div id="main-panel-wrapper">
+    <div
+      id="main-panel-wrapper"
+      :class="entering.main ? 'main-in main-initial' : ''"
+      >
       <img id="main-panel" src="./img/main.svg">
 
       <div id="progress-wrapper">
@@ -29,7 +35,12 @@
         </span>
       </div>
 
-      <div id="p1-name-wrapper" class="name-wrapper">
+      <div id="p1-name-wrapper"
+        class="name-wrapper"
+        :class="[entering.players ? 'p1-name-in' : '',
+                 entering.main ? 'p1-name-initial' : '',
+                 updating.players ? 'p1-name-out' : '']"
+        >
         <img src="./img/name1.svg">
 
         <div id="p1-name-text-wrapper" class="name-text-wrapper">
@@ -51,14 +62,24 @@
 
         </div>
 
-        <div id="p1-flag-wrapper" class="flag-wrapper">
+        <div id="p1-flag-wrapper"
+          class="flag-wrapper"
+          :class="[entering.players ? 'p1-flag-in p1-flag-initial' : '',
+                   entering.main ? 'hidden' : '',
+                   updating.players ? 'p1-flag-out' : '']"
+          >
           <div class="flag-mask">
             <img class="flag" :src="flagPath(local.p1.country)">
           </div>
         </div>
       </div>
 
-      <div id="p2-name-wrapper" class="name-wrapper">
+      <div id="p2-name-wrapper"
+        class="name-wrapper"
+        :class="[entering.players ? 'p2-name-in' : '',
+                 entering.main ? 'p2-name-initial' : '',
+                 updating.players ? 'p2-name-out' : '']"
+        >
         <img src="./img/name2.svg">
         <div id="p2-name-text-wrapper" class="name-text-wrapper">
 
@@ -78,7 +99,12 @@
 
         </div>
 
-        <div id="p2-flag-wrapper" class="flag-wrapper">
+        <div id="p2-flag-wrapper"
+          class="flag-wrapper"
+          :class="[entering.players ? 'p2-flag-in p2-flag-initial' : '',
+                   entering.main ? 'hidden' : '',
+                   updating.players ? 'p2-flag-out' : '']"
+          >
           <div class="flag-mask">
             <img class="flag" :src="flagPath(local.p2.country)">
           </div>
@@ -99,6 +125,8 @@ import { Bracket } from "schemas/bracket"
 
 const BRACKET_RULES = require("@/rules/bracket.json")
 
+type EventCallback = (event: Event) => void
+
 @Component
 export default class App extends Vue {
   @State("players") playersState!: Players
@@ -113,12 +141,6 @@ export default class App extends Vue {
       team: "" as string,
       games: 0 as number,
       country: "" as string,
-
-      updating: {
-        name: false as boolean,
-        games: false as boolean,
-        country: false as boolean,
-      }
     },
 
     p2: {
@@ -126,14 +148,22 @@ export default class App extends Vue {
       team: "" as string,
       games: 0 as number,
       country: "" as string,
-
-      updating: {
-        name: false as boolean,
-        games: false as boolean,
-        country: false as boolean,
-      }
     }
   }
+
+  entering = {
+    main: true as boolean,
+    players: false as boolean,
+  }
+
+  updating = {
+    progress: false as boolean,
+    players: false as boolean,
+    p1Games: false as boolean,
+    p2Games: false as boolean,
+  }
+
+  updateQueue = []
 
   readonly cjkFontSizeRatio = 0.85
   readonly nameTextFontSizeLatin: number = 2.8
@@ -173,12 +203,6 @@ export default class App extends Vue {
       this.players[this.scoreboard[playerIndex].playerId].country
   }
 
-  progress() : string {
-    return this.bracket.shouldOverrideProgress ?
-      this.bracket.customProgress :
-      this.progressList[this.bracket.progress - 1].text
-  }
-
   flagPath(country: string): string {
     return require("@/../node_modules/region-flags/svg/" +
       country.toUpperCase() + ".svg")
@@ -197,23 +221,138 @@ export default class App extends Vue {
   }
 
   progressTextFontSize(): number {
-    return this.containsCjkCharacters(this.progress()) ?
+    return this.containsCjkCharacters(this.progress) ?
       this.progressTextFontSizeLatin * this.cjkFontSizeRatio :
       this.progressTextFontSizeLatin
   }
 
   created(): void {
-    this.local.p1.gamerTag = this.gamerTag(0)
-    this.local.p1.team = this.team(0)
-    this.local.p1.games = this.scoreboard[0].games
-    this.local.p1.country = this.country(0)
+    this.local.p1.gamerTag = this.p1GamerTag
+    this.local.p1.team = this.p1Team
+    this.local.p1.games = this.p1Games
+    this.local.p1.country = this.p1Country
 
-    this.local.p2.gamerTag = this.gamerTag(1)
-    this.local.p2.team = this.team(1)
-    this.local.p2.games = this.scoreboard[1].games
-    this.local.p2.country = this.country(1)
+    this.local.p2.gamerTag = this.p2GamerTag
+    this.local.p2.team = this.p2Team
+    this.local.p2.games = this.p2Games
+    this.local.p2.country = this.p2Country
 
-    this.local.progress = this.progress()
+    this.local.progress = this.progress
+  }
+
+  readonly animationEndEvents: Array<{id: string, c: EventCallback}> = [
+    {id: "#main-panel-wrapper", c: EventCallback => {
+      if ((event as AnimationEvent)!.animationName === "ani-main-panel-in") {
+        this.entering.main = false
+        this.entering.players = true
+      }
+    }},
+    {id: "#p1-name-wrapper", c: EventCallback => {
+      console.log(event)
+      if ((event as AnimationEvent)!.animationName === "ani-p1-flag-in") {
+        this.entering.players = false
+      } else if ((event as AnimationEvent)!.animationName === "ani-p1-name-out") {
+        this.updating.players = false
+        this.entering.players = true
+      }
+    }},
+    {id: "#p1-games-text-wrapper", c: EventCallback => {
+
+    }},
+    {id: "#p2-games-text-wrapper", c: EventCallback => {
+
+    }},
+  ]
+
+  setupAnimationEndEvents(): void {
+    this.animationEndEvents.forEach((e) => {
+      document.querySelector(e.id)!.addEventListener("animationend", e.c)
+    })
+  }
+
+  mounted(): void {
+    this.setupAnimationEndEvents()
+  }
+
+  get progress() : string {
+    return this.bracket.shouldOverrideProgress ?
+      this.bracket.customProgress :
+      this.progressList[this.bracket.progress - 1].text
+  }
+
+  @Watch("progress")
+  progressWatch(newValue: string, oldValue: string): void {
+  }
+
+  get p1GamerTag(): string {
+    return this.gamerTag(0)
+  }
+
+  @Watch("p1GamerTag")
+  p1GamerTagWatch(newValue: string, oldValue: string): void {
+    this.updating.players = true
+  }
+
+  get p1Team(): string {
+    return this.team(0)
+  }
+
+  @Watch("p1Team")
+  p1TeamWatch(newValue: string, oldValue: string): void {
+
+  }
+
+  get p1Games(): number {
+    return this.scoreboard[0].games
+  }
+
+  @Watch("p1Games")
+  p1GamesWatch(newValue: number, oldValue: number): void {
+
+  }
+
+  get p1Country(): string {
+    return this.country(0)
+  }
+
+  @Watch("p1Country")
+  p1CountryWatch(newValue: string, oldValue: string): void {
+
+  }
+
+  get p2GamerTag(): string {
+    return this.gamerTag(1)
+  }
+
+  @Watch("p2GamerTag")
+  p2GamerTagWatch(newValue: string, oldValue: string): void {
+
+  }
+
+  get p2Team(): string {
+    return this.team(1)
+  }
+
+  @Watch("p2Team")
+  p2TeamWatch(newValue: string, oldValue: string): void {
+
+  }
+
+  get p2Games(): number {
+    return this.scoreboard[1].games
+  }
+
+  @Watch("p2Games")
+  p2GamesWatch(newValue: number, oldValue: number): void {
+  }
+
+  get p2Country(): string {
+    return this.country(1)
+  }
+
+  @Watch("p2Country")
+  p2CountryWatch(newValue: string, oldValue: string): void {
+
   }
 }
 </script>
@@ -221,6 +360,8 @@ export default class App extends Vue {
 <style>
 
 :root {
+  --animation-curve: cubic-bezier(0.19, 1, 0.22, 1);
+
   --main-panel-height: 60px;
   --main-panel-width: 409.28px;
 
@@ -230,10 +371,14 @@ export default class App extends Vue {
   --name-panel-height: 50px;
   --name-panel-width: 499.19px;
   --name-panel-offset: calc(var(--name-panel-width) * 0.95 * -1);
+  --name-panel-p1-mask-start: polygon(0 0, 15% 0, 15% 100%, 0 100%);
+  --name-panel-p2-mask-start: polygon(85% 0, 100% 0, 100% 100%, 85% 100%);
+  --name-panel-mask-end: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 
   --flag-height: 50px;
   --flag-width: 120px;
-  --flag-offset: calc(var(--flag-width) * (0.25 + 0.01));
+  --flag-start-x: calc(var(--flag-width) + 1px);
+  --flag-end-x: calc(var(--flag-width) * (0.25 + 0.01));
 
   --name-text-width: calc(var(--name-panel-width) * 0.825);
   --name-text-height: calc(var(--name-panel-height) * 0.8);
@@ -269,9 +414,6 @@ img {
   left: 0;
   z-index: -2;
   transform: translateX(-50%) translate3d(0,0,0);
-  animation: main-panel-in 0.5s forwards;
-  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  opacity: 0;
 }
 
 #main-panel {
@@ -285,10 +427,6 @@ img {
   left: 0;
   z-index: 0;
   transform: translateX(-50%);
-  animation: main-panel-in 0.5s forwards;
-  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  animation-delay: 0.15s;
-  opacity: 0;
 }
 
 #progress-wrapper {
@@ -311,38 +449,22 @@ img {
   left: var(--name-panel-offset);
   padding-left: var(--flag-width);
   margin-left: calc(var(--flag-width) * -1);
-
-  animation: p1-name-in 1s forwards;
-  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  animation-delay: 0.75s;
 }
 
 #p2-name-wrapper {
   right: var(--name-panel-offset);
   padding-right: var(--flag-width);
   margin-right: calc(var(--flag-width) * -1);
-
-  animation: p2-name-in 1s ease-in-out forwards;
-  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  animation-delay: 0.75s;
 }
 
 #p1-flag-wrapper {
-  left: var(--flag-offset);
+  left: var(--flag-end-x);
   clip-path: polygon(0 0, 75% 0, 100% 100%, 25% 100%);
-
-  animation: p1-flag-in 0.75s ease-in-out forwards;
-  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  animation-delay: 0.9s;
 }
 
 #p2-flag-wrapper {
-  right: var(--flag-offset);
+  right: var(--flag-end-x);
   clip-path: polygon(25% 0, 100% 0, 75% 100%, 0 100%);
-
-  animation: p2-flag-in 0.75s ease-in-out forwards;
-  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  animation-delay: 0.9s;
 }
 
 #p1-name-text-wrapper {
@@ -363,15 +485,40 @@ img {
   right: var(--games-text-offset-x);
 }
 
+.hidden {
+  opacity: 0;
+}
+
+.main-initial {
+  top: calc(var(--main-panel-height) * -1) !important;
+}
+
+.p1-name-initial {
+  clip-path: var(--name-panel-p1-mask-start);
+}
+
+.p1-flag-initial {
+  left: var(--flag-start-x) !important;
+}
+
+.p2-flag-initial {
+  right: var(--flag-start-x) !important;
+}
+
+.p2-name-initial {
+  clip-path: var(--name-panel-p2-mask-start);
+}
+
+.p2-flag-initial {
+}
+
 .name-wrapper {
   position: absolute;
   height: var(--name-panel-height);
   top: 0;
   z-index: -2;
-  opacity: 0;
   overflow: visible;
   padding-bottom: 20px;
-  opacity: 0;
   filter: drop-shadow(0px 2px 5px #222);
 }
 
@@ -381,7 +528,6 @@ img {
   width: var(--flag-width);
   top: 0;
   z-index: -3;
-  opacity: 0;
 }
 
 .flag-mask {
@@ -428,62 +574,145 @@ img {
   color: white;
 }
 
-@keyframes main-panel-in {
+.back-in {
+  animation: ani-main-panel-in 0.5s forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.main-in {
+  animation: ani-main-panel-in 0.5s forwards;
+  animation-timing-function: var(--animation-curve);
+  animation-delay: 0.15s;
+}
+
+.p1-name-in {
+  animation: ani-p1-name-in 1s forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.p1-name-out {
+  animation: ani-p1-name-out 1s forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.p2-name-in {
+  animation: ani-p2-name-in 1s forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.p2-name-out {
+  animation: ani-p2-name-out 1s forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.p1-flag-in {
+  animation: ani-p1-flag-in 0.75s forwards;
+  animation-timing-function: var(--animation-curve);
+  animation-delay: 0.25s;
+}
+
+.p1-flag-out {
+  animation: ani-p1-flag-out 0.75s forwards;
+  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.p2-flag-in {
+  animation: ani-p2-flag-in 0.75s forwards;
+  animation-timing-function: var(--animation-curve);
+  animation-delay: 0.25s;
+}
+
+.p2-flag-out {
+  animation: ani-p2-flag-out 0.75s forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+@keyframes ani-main-panel-in {
   0% {
-    opacity: 1;
     top: calc(var(--main-panel-height) * -1);
   }
   100% {
-    opacity: 1;
     top: 0px
   }
 }
 
-@keyframes p1-name-in {
+@keyframes ani-p1-name-in {
   0% {
-    opacity: 1;
     left: 10%;
-    clip-path: polygon(0 0, 15% 0, 15% 100%, 0 100%);
+    clip-path: var(--name-panel-p1-mask-start);
   }
   100% {
-    opacity: 1;
     left: var(--name-panel-offset);
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: var(--name-panel-mask-end);
   }
 }
 
-@keyframes p2-name-in {
+@keyframes ani-p1-name-out {
   0% {
-    opacity: 1;
+    left: var(--name-panel-offset);
+    clip-path: var(--name-panel-mask-end);
+  }
+  100% {
+    left: 10%;
+    clip-path: var(--name-panel-p1-mask-start);
+  }
+}
+
+@keyframes ani-p2-name-in {
+  0% {
     right: 10%;
-    clip-path: polygon(85% 0, 100% 0, 100% 100%, 85% 100%);
+    clip-path: var(--name-panel-p2-mask-start);
   }
   100% {
-    opacity: 1;
     right: var(--name-panel-offset);
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: var(--name-panel-mask-end);
   }
 }
 
-@keyframes p1-flag-in {
+@keyframes ani-p2-name-out {
   0% {
-    opacity: 1;
-    left: var(--flag-width);
+    right: var(--name-panel-offset);
+    clip-path: var(--name-panel-mask-end);
   }
   100% {
-    opacity: 1;
-    left: var(--flag-offset);
+    right: 10%;
+    clip-path: var(--name-panel-p2-mask-start);
   }
 }
 
-@keyframes p2-flag-in {
+@keyframes ani-p1-flag-in {
   0% {
-    opacity: 1;
-    right: var(--flag-width);
+    left: var(--flag-start-x);
   }
   100% {
-    opacity: 1;
-    right: var(--flag-offset);
+    left: var(--flag-end-x);
+  }
+}
+
+@keyframes ani-p1-flag-out {
+  0% {
+    left: var(--flag-end-x);
+  }
+  100% {
+    left: var(--flag-start-x);
+  }
+}
+
+@keyframes ani-p2-flag-in {
+  0% {
+    right: var(--flag-start-x);
+  }
+  100% {
+    right: var(--flag-end-x);
+  }
+}
+
+@keyframes ani-p2-flag-out {
+  0% {
+    right: var(--flag-end-x);
+  }
+  100% {
+    right: var(--flag-start-x);
   }
 }
 
