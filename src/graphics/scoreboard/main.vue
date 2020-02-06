@@ -13,7 +13,11 @@
       >
       <img id="main-panel" src="./img/main.svg">
 
-      <div id="progress-wrapper">
+      <div
+        id="progress-text-wrapper"
+        :class="[entering.progress ? 'text-in' : '',
+                 updating.progress ? 'text-out' : '']"
+        >
           <fit-text id="progress-text"
             unit="rem"
             :min="1.5"
@@ -23,13 +27,21 @@
           </fit-text>
       </div>
 
-      <div id="p1-games-text-wrapper" class="games-text-wrapper">
+      <div id="p1-games-text-wrapper"
+        class="games-text-wrapper"
+        :class="[entering.p1Games ? 'text-in' : '',
+                 updating.p1Games ? 'text-out' : '']"
+        >
         <span class="games-text">
           {{ local.p1.games }}
         </span>
       </div>
 
-      <div id="p2-games-text-wrapper" class="games-text-wrapper">
+      <div id="p2-games-text-wrapper"
+         class="games-text-wrapper"
+         :class="[entering.p2Games ? 'text-in' : '',
+                  updating.p2Games ? 'text-out' : '']"
+        >
         <span class="games-text">
           {{ local.p2.games }}
         </span>
@@ -154,6 +166,9 @@ export default class App extends Vue {
   entering = {
     main: true as boolean,
     players: false as boolean,
+    progress: false as boolean,
+    p1Games: false as boolean,
+    p2Games: false as boolean,
   }
 
   updating = {
@@ -191,10 +206,20 @@ export default class App extends Vue {
       this.players[this.scoreboard[playerIndex].playerId].gamerTag
   }
 
+  games(playerIndex: number): number {
+    return this.scoreboard[playerIndex].games
+  }
+
   team(playerIndex: number): string {
     return this.scoreboard[playerIndex].shouldOverride ?
       this.scoreboard[playerIndex].teamOverride :
       this.players[this.scoreboard[playerIndex].playerId].team
+  }
+
+  progressWrapper(): string {
+    return this.bracket.shouldOverrideProgress ?
+      this.bracket.customProgress :
+      this.progressList[this.bracket.progress - 1].text
   }
 
   country(playerIndex: number): string {
@@ -248,19 +273,47 @@ export default class App extends Vue {
       }
     }},
     {id: "#p1-name-wrapper", c: EventCallback => {
-      console.log(event)
       if ((event as AnimationEvent)!.animationName === "ani-p1-flag-in") {
         this.entering.players = false
       } else if ((event as AnimationEvent)!.animationName === "ani-p1-name-out") {
+        this.local.p1.gamerTag = this.p1GamerTag
+        this.local.p1.team = this.p1Team
+        this.local.p1.country = this.p1Country
+
+        this.local.p2.gamerTag = this.p2GamerTag
+        this.local.p2.team = this.p2Team
+        this.local.p2.country = this.p2Country
+
         this.updating.players = false
         this.entering.players = true
       }
     }},
     {id: "#p1-games-text-wrapper", c: EventCallback => {
-
+      if ((event as AnimationEvent)!.animationName === "ani-text-in") {
+        this.entering.p1Games = false
+      } else if ((event as AnimationEvent)!.animationName === "ani-text-out") {
+        this.updating.p1Games = false
+        this.entering.p1Games = true
+        this.local.p1.games = this.p1Games
+      }
     }},
     {id: "#p2-games-text-wrapper", c: EventCallback => {
-
+      if ((event as AnimationEvent)!.animationName === "ani-text-in") {
+        this.entering.p2Games = false
+      } else if ((event as AnimationEvent)!.animationName === "ani-text-out") {
+        this.updating.p2Games = false
+        this.entering.p2Games = true
+        this.local.p2.games = this.p2Games
+      }
+    }},
+    {id: "#progress-text-wrapper", c: EventCallback => {
+      if ((event as AnimationEvent)!.animationName === "ani-text-in") {
+        this.entering.progress = false
+      } else if ((event as AnimationEvent)!.animationName === "ani-text-out") {
+        this.updating.progress = false
+        this.entering.progress = true
+        this.local.progress = this.progress
+      }
     }},
   ]
 
@@ -275,13 +328,12 @@ export default class App extends Vue {
   }
 
   get progress() : string {
-    return this.bracket.shouldOverrideProgress ?
-      this.bracket.customProgress :
-      this.progressList[this.bracket.progress - 1].text
+    return this.progressWrapper()
   }
 
   @Watch("progress")
   progressWatch(newValue: string, oldValue: string): void {
+    this.updating.progress = true
   }
 
   get p1GamerTag(): string {
@@ -299,34 +351,34 @@ export default class App extends Vue {
 
   @Watch("p1Team")
   p1TeamWatch(newValue: string, oldValue: string): void {
-
+    this.updating.players = true
   }
 
   get p1Games(): number {
-    return this.scoreboard[0].games
-  }
-
-  @Watch("p1Games")
-  p1GamesWatch(newValue: number, oldValue: number): void {
-
-  }
-
-  get p1Country(): string {
-    return this.country(0)
+    return this.games(0)
   }
 
   @Watch("p1Country")
   p1CountryWatch(newValue: string, oldValue: string): void {
-
+    this.updating.players = true
   }
 
   get p2GamerTag(): string {
     return this.gamerTag(1)
   }
 
+  @Watch("p1Games")
+  p1GamesWatch(newValue: number, oldValue: number): void {
+    this.updating.p1Games = true
+  }
+
+  get p1Country(): string {
+    return this.country(0)
+  }
+
   @Watch("p2GamerTag")
   p2GamerTagWatch(newValue: string, oldValue: string): void {
-
+    this.updating.players = true
   }
 
   get p2Team(): string {
@@ -335,15 +387,7 @@ export default class App extends Vue {
 
   @Watch("p2Team")
   p2TeamWatch(newValue: string, oldValue: string): void {
-
-  }
-
-  get p2Games(): number {
-    return this.scoreboard[1].games
-  }
-
-  @Watch("p2Games")
-  p2GamesWatch(newValue: number, oldValue: number): void {
+    this.updating.players = true
   }
 
   get p2Country(): string {
@@ -352,7 +396,16 @@ export default class App extends Vue {
 
   @Watch("p2Country")
   p2CountryWatch(newValue: string, oldValue: string): void {
+    this.updating.players = true
+  }
 
+  get p2Games(): number {
+    return this.games(1)
+  }
+
+  @Watch("p2Games")
+  p2GamesWatch(newValue: number, oldValue: number): void {
+    this.updating.p2Games = true
   }
 }
 </script>
@@ -360,8 +413,6 @@ export default class App extends Vue {
 <style>
 
 :root {
-  --animation-curve: cubic-bezier(0.19, 1, 0.22, 1);
-
   --main-panel-height: 60px;
   --main-panel-width: 409.28px;
 
@@ -394,6 +445,20 @@ export default class App extends Vue {
   --progress-text-height: calc(var(--main-panel-height) * 0.55);
   --progress-text-offset-x: calc(var(--main-panel-width) * 0.5);
   --progress-text-offset-y: calc(var(--main-panel-height) * 0.375 - (var(--progress-text-height) * 0.5) );
+
+  --text-in-duration: 0.35s;
+  --text-out-duration: 0.3s;
+  --main-in-duration: 0.5s;
+  --main-in-delay: 0.15s;
+  --back-in-duration: var(--main-in-duration);
+  --name-in-duration: 1s;
+  --name-out-duration: 0.75s;
+  --flag-in-duration: 0.75s;
+  --flag-in-delay: 0.25s;
+  --flag-out-duration: 0.3s;
+
+  --animation-curve: cubic-bezier(0.19, 1, 0.22, 1);
+
 }
 
 img {
@@ -429,7 +494,7 @@ img {
   transform: translateX(-50%);
 }
 
-#progress-wrapper {
+#progress-text-wrapper {
   position: absolute;
   top: var(--progress-text-offset-y);
   left: var(--progress-text-offset-x);
@@ -574,56 +639,66 @@ img {
   color: white;
 }
 
+.text-in {
+  animation: ani-text-in var(--text-in-duration) forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.text-out {
+  animation: ani-text-out var(--text-in-duration) forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
 .back-in {
-  animation: ani-main-panel-in 0.5s forwards;
+  animation: ani-main-panel-in var(--back-in-duration) forwards;
   animation-timing-function: var(--animation-curve);
 }
 
 .main-in {
-  animation: ani-main-panel-in 0.5s forwards;
+  animation: ani-main-panel-in var(--main-in-duration) forwards;
   animation-timing-function: var(--animation-curve);
-  animation-delay: 0.15s;
+  animation-delay: var(--main-in-delay);
 }
 
 .p1-name-in {
-  animation: ani-p1-name-in 1s forwards;
-  animation-timing-function: var(--animation-curve);
-}
-
-.p1-name-out {
-  animation: ani-p1-name-out 1s forwards;
+  animation: ani-p1-name-in var(--name-in-duration) forwards;
   animation-timing-function: var(--animation-curve);
 }
 
 .p2-name-in {
-  animation: ani-p2-name-in 1s forwards;
+  animation: ani-p2-name-in var(--name-in-duration) forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.p1-name-out {
+  animation: ani-p1-name-out var(--name-out-duration) forwards;
   animation-timing-function: var(--animation-curve);
 }
 
 .p2-name-out {
-  animation: ani-p2-name-out 1s forwards;
+  animation: ani-p2-name-out var(--name-out-duration) forwards;
   animation-timing-function: var(--animation-curve);
 }
 
 .p1-flag-in {
-  animation: ani-p1-flag-in 0.75s forwards;
+  animation: ani-p1-flag-in var(--flag-in-duration) forwards;
   animation-timing-function: var(--animation-curve);
-  animation-delay: 0.25s;
-}
-
-.p1-flag-out {
-  animation: ani-p1-flag-out 0.75s forwards;
-  animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  animation-delay: var(--flag-in-delay);
 }
 
 .p2-flag-in {
-  animation: ani-p2-flag-in 0.75s forwards;
+  animation: ani-p2-flag-in var(--flag-in-duration) forwards;
   animation-timing-function: var(--animation-curve);
-  animation-delay: 0.25s;
+  animation-delay: var(--flag-in-delay);
+}
+
+.p1-flag-out {
+  animation: ani-p1-flag-out var(--flag-out-duration) forwards;
+  animation-timing-function: var(--animation-curve);
 }
 
 .p2-flag-out {
-  animation: ani-p2-flag-out 0.75s forwards;
+  animation: ani-p2-flag-out var(--flag-out-duration) forwards;
   animation-timing-function: var(--animation-curve);
 }
 
@@ -633,6 +708,24 @@ img {
   }
   100% {
     top: 0px
+  }
+}
+
+@keyframes ani-text-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes ani-text-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
