@@ -192,7 +192,7 @@ export default class App extends Vue {
   }
 
   createSnackbar(text: string, color?: string) {
-    this.snackbarColor = color ? color : ""
+    this.snackbarColor = color ? color : "primary"
     this.snackbarText = text
     this.snackbar = true
   }
