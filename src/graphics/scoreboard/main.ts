@@ -7,8 +7,8 @@ import "../_misc/fonts/bebas.css"
 import "../_misc/fonts/gilroy.css"
 import "../_misc/fonts/rounded-mplus.css"
 
-import FitText from "../../../node_modules/vue-fit-text/src/fitText.vue"
-Vue.component("fit-text", FitText)
+import Fitty from "./components/fitty.vue"
+Vue.component("fit-text", Fitty)
 
 waitForReplicants().then((store) => {
   new Vue({

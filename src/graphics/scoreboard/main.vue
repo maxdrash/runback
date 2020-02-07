@@ -18,11 +18,10 @@
         :class="[entering.progress ? 'text-in' : '',
                  updating.progress ? 'text-out' : '']"
         >
-          <fit-text id="progress-text"
-            unit="rem"
-            :min="1.5"
-            :max="progressTextFontSize()"
-            >
+          <fit-text
+            id="progress-text"
+            :options="{minSize: 1, maxSize: progressFontSize, multiLine: false}"
+          >
             {{ local.progress }}
           </fit-text>
       </div>
@@ -56,13 +55,9 @@
         <img src="./img/name1.svg">
 
         <div id="p1-name-text-wrapper" class="name-text-wrapper">
-
           <fit-text
-            unit="rem"
-            :min="1"
-            :max="nameTextFontSize(0)"
-            >
-
+            :options="{minSize: 1, maxSize: p1NameFontSize, multiLine: false}"
+          >
             <span class="team-text">
               {{ local.p1.team }}
             </span>
@@ -70,8 +65,8 @@
             <span class="gamertag-text">
               {{ local.p1.gamerTag }}
             </span>
-          </fit-text>
 
+          </fit-text>
         </div>
 
         <div id="p1-flag-wrapper"
@@ -93,13 +88,12 @@
                  updating.players ? 'p2-name-out' : '']"
         >
         <img src="./img/name2.svg">
+
         <div id="p2-name-text-wrapper" class="name-text-wrapper">
 
-          <fit-text class="team-text"
-            unit="rem"
-            :min="1"
-            :max="nameTextFontSize(1)"
-            >
+          <fit-text
+            :options="{minSize: 1, maxSize: p2NameFontSize, multiLine: false}"
+          >
             <span class="team-text">
               {{ local.p2.team }}
             </span>
@@ -107,8 +101,8 @@
             <span class="gamertag-text">
               {{ local.p2.gamerTag }}
             </span>
-          </fit-text>
 
+          </fit-text>
         </div>
 
         <div id="p2-flag-wrapper"
@@ -181,8 +175,11 @@ export default class App extends Vue {
   updateQueue = []
 
   readonly cjkFontSizeRatio = 0.85
-  readonly nameTextFontSizeLatin: number = 2.8
-  readonly progressTextFontSizeLatin: number = 2.1
+
+  fontSizes =  {
+    name: 45,
+    progress: 35,
+  }
 
   readonly progressList: Array<{text: string, value: number}> = BRACKET_RULES.progressList
   readonly sideList: Array<{text: string, value: number}> = BRACKET_RULES.sideList
@@ -238,18 +235,29 @@ export default class App extends Vue {
     return regex.test(s)
   }
 
-  nameTextFontSize(playerIndex: number): number {
+  nameFontSize(playerIndex: number): number {
+    let base = this.fontSizes.name
+
     return this.containsCjkCharacters(this.team(playerIndex)) ||
            this.containsCjkCharacters(this.gamerTag(playerIndex)) ?
-      this.nameTextFontSizeLatin * this.cjkFontSizeRatio :
-      this.nameTextFontSizeLatin
+      base * this.cjkFontSizeRatio : base
   }
 
-  progressTextFontSize(): number {
+  get progressFontSize(): number {
+    let base = this.fontSizes.progress
+
     return this.containsCjkCharacters(this.progress) ?
-      this.progressTextFontSizeLatin * this.cjkFontSizeRatio :
-      this.progressTextFontSizeLatin
+      base * this.cjkFontSizeRatio : base
   }
+
+  get p1NameFontSize(): number {
+    return this.nameFontSize(0)
+  }
+
+  get p2NameFontSize(): number {
+    return this.nameFontSize(1)
+  }
+
 
   created(): void {
     this.local.p1.gamerTag = this.p1GamerTag
@@ -446,8 +454,8 @@ export default class App extends Vue {
   --progress-text-offset-x: calc(var(--main-panel-width) * 0.5);
   --progress-text-offset-y: calc(var(--main-panel-height) * 0.375 - (var(--progress-text-height) * 0.5) );
 
-  --text-in-duration: 0.35s;
-  --text-out-duration: 0.3s;
+  --text-in-duration: 0.25s;
+  --text-out-duration: 0.25s;
   --main-in-duration: 0.5s;
   --main-in-delay: 0.15s;
   --back-in-duration: var(--main-in-duration);
@@ -458,7 +466,7 @@ export default class App extends Vue {
   --flag-out-duration: 0.3s;
 
   --animation-curve: cubic-bezier(0.19, 1, 0.22, 1);
-
+  --text-curve: linear;
 }
 
 img {
@@ -641,12 +649,12 @@ img {
 
 .text-in {
   animation: ani-text-in var(--text-in-duration) forwards;
-  animation-timing-function: var(--animation-curve);
+  animation-timing-function: var(--text-curve);
 }
 
 .text-out {
   animation: ani-text-out var(--text-in-duration) forwards;
-  animation-timing-function: var(--animation-curve);
+  animation-timing-function: var(--text-curve);
 }
 
 .back-in {

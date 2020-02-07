@@ -2112,6 +2112,11 @@ findup-sync@3.0.0:
     micromatch "^3.0.4"
     resolve-dir "^1.0.1"
 
+fitty@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/fitty/-/fitty-2.3.0.tgz#abf8a59987a8e01fe00bd09a4ce91570b183d830"
+  integrity sha512-a4axS2xr0Lcp95We4hIrAvpgdzp6WHPaHp9neb5kMdjefCsNLoD4lPx69yKtKe60X/ZMEJznsPot6C1Tw5KZOA==
+
 flat-cache@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-2.0.1.tgz#5d296d6f04bda44a4630a301413bdbc2ec085ec0"
@@ -5559,10 +5564,6 @@ vue-eslint-parser@^7.0.0:
     espree "^6.1.2"
     esquery "^1.0.1"
     lodash "^4.17.15"
-
-vue-fit-text@robbeman/vue-fit-text:
-  version "0.0.0"
-  resolved "https://codeload.github.com/robbeman/vue-fit-text/tar.gz/dd8277406cd2c030af58007f94f5e5468fc20884"
 
 vue-hot-reload-api@^2.3.0, vue-hot-reload-api@^2.3.4:
   version "2.3.4"
