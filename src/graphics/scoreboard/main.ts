@@ -8,7 +8,7 @@ import "../_misc/fonts/gilroy.css"
 import "../_misc/fonts/rounded-mplus.css"
 
 import Fitty from "./components/fitty.vue"
-Vue.component("fit-text", Fitty)
+Vue.component("fitty", Fitty)
 
 waitForReplicants().then((store) => {
   new Vue({

@@ -18,12 +18,12 @@
         :class="[entering.progress ? 'text-in' : '',
                  updating.progress ? 'text-out' : '']"
         >
-          <fit-text
+          <fitty
             id="progress-text"
             :options="{minSize: 1, maxSize: progressFontSize, multiLine: false}"
           >
             {{ local.progress }}
-          </fit-text>
+          </fitty>
       </div>
 
       <div id="p1-games-text-wrapper"
@@ -55,7 +55,7 @@
         <img src="./img/name1.svg">
 
         <div id="p1-name-text-wrapper" class="name-text-wrapper">
-          <fit-text
+          <fitty
             :options="{minSize: 1, maxSize: p1NameFontSize, multiLine: false}"
           >
             <span class="team-text">
@@ -66,7 +66,7 @@
               {{ local.p1.gamerTag }}
             </span>
 
-          </fit-text>
+          </fitty>
         </div>
 
         <div id="p1-flag-wrapper"
@@ -91,7 +91,7 @@
 
         <div id="p2-name-text-wrapper" class="name-text-wrapper">
 
-          <fit-text
+          <fitty
             :options="{minSize: 1, maxSize: p2NameFontSize, multiLine: false}"
           >
             <span class="team-text">
@@ -102,7 +102,7 @@
               {{ local.p2.gamerTag }}
             </span>
 
-          </fit-text>
+          </fitty>
         </div>
 
         <div id="p2-flag-wrapper"
