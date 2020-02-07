@@ -31,9 +31,12 @@
         :class="[entering.p1Games ? 'text-in' : '',
                  updating.p1Games ? 'text-out' : '']"
         >
-        <span class="games-text">
+        <fitty
+          class="games-text"
+          :options="{minSize: 1, maxSize: 55, multiLine: false}"
+        >
           {{ local.p1.games }}
-        </span>
+        </fitty>
       </div>
 
       <div id="p2-games-text-wrapper"
@@ -41,9 +44,12 @@
          :class="[entering.p2Games ? 'text-in' : '',
                   updating.p2Games ? 'text-out' : '']"
         >
-        <span class="games-text">
+        <fitty
+          class="games-text"
+          :options="{minSize: 1, maxSize: 55, multiLine: false}"
+        >
           {{ local.p2.games }}
-        </span>
+        </fitty>
       </div>
 
       <div id="p1-name-wrapper"
@@ -444,9 +450,9 @@ export default class App extends Vue {
   --name-text-offset-x: calc(var(--name-panel-width) * 0.075);
   --name-text-offset-y: calc(var(--name-panel-height) * 0.5 - (var(--name-text-height) * 0.5) );
 
-  --games-text-width: calc(var(--main-panel-width) * 0.15);
+  --games-text-width: calc(var(--main-panel-width) * 0.11);
   --games-text-height: calc(var(--main-panel-height) * 0.8);
-  --games-text-offset-x: calc(var(--games-text-width) * 0.125);
+  --games-text-offset-x: calc(var(--main-panel-width) * 0.04);
   --games-text-offset-y: calc(var(--main-panel-height) * 0.5 - (var(--games-text-height) * 0.5) );
 
   --progress-text-width: calc(var(--main-panel-width) * 0.65);
@@ -634,7 +640,6 @@ img {
 
 .games-text {
   color: white;
-  font-size: 3.5rem;
   font-family: "Gilroy";
   font-weight: bold;
 }
