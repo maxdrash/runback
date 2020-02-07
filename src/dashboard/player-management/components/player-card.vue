@@ -247,6 +247,7 @@ export default class PlayerCard extends Vue {
   confirmDeletePlayer(): void {
     this.dialog = false
     this.deletePlayer(this.playerId)
+    this.$root.$emit("playerWasDeleted")
   }
 }
 

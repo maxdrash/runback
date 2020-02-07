@@ -19,6 +19,7 @@ const reps: {
 
 // Types for mutations below
 export type CreatePlayer = (player: Player) => void
+export type ImportPlayers = (importedPlayers: Array<Player>) => void
 export type UpdatePlayer = (player: Player) => void
 export type DeletePlayer = (playerId: number) => void
 
@@ -38,6 +39,19 @@ const store = new Vuex.Store({
       if (typeof players !== "undefined") {
         player.id = players.length
         players.push(player)
+      }
+    },
+    importPlayers(state, importedPlayers: Array<Player>): void {
+      let players = reps.players.value
+
+      if (typeof players !== "undefined") {
+        let id = players.length
+
+        importedPlayers.forEach((player: Player) => {
+          player.id = id
+          players!.push(player)
+          ++id
+        })
       }
     },
     updatePlayer(state, player: Player): void {

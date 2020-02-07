@@ -36,7 +36,10 @@
               </v-list>
             </v-menu>
 
-            <v-dialog v-model="dialog" persistent max-width="600px" @input="clearForm()">
+            <input v-show="false" ref="inputUpload" type="file" accept="application/json"
+              @change="importPlayersCallback($event.target.files[0])">
+
+            <v-dialog v-model="registerDialog" persistent max-width="600px" @input="clearForm()">
               <template v-slot:activator="{ on }">
                 <v-btn icon v-on="on">
                   <v-icon>mdi-plus</v-icon>
@@ -44,7 +47,7 @@
               </template>
               <v-card>
                 <v-card-title>
-                  <span class="headline">Create new player</span>
+                  <span class="headline">Register new player</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
@@ -94,7 +97,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   color="blue darken-1"
-                  @click="dialog = false"
+                  @click="registerDialog = false"
                   text
                   >
                   Cancel
@@ -103,9 +106,9 @@
                   :disabled="!valid"
                   color="blue darken-1"
                   text
-                  @click="createDialog()"
+                  @click="submitRegisterPlayer()"
                   >
-                  Create
+                  Register
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -124,6 +127,15 @@
           </panel>
         </v-col>
       </v-row>
+
+      <v-snackbar bottom :timeout="10000" v-model="snackbar" :color="snackbarColor">
+        {{ snackbarText }}
+
+        <v-btn text @click="snackbar = false">
+          Close
+        </v-btn>
+      </v-snackbar>
+
     </v-content>
   </v-app>
 </template>
@@ -131,12 +143,12 @@
 <script lang="ts">
 
 import "reflect-metadata"
-import { Vue, Component, Prop } from "vue-property-decorator"
+import { Vue, Component, Prop, Ref, Emit } from "vue-property-decorator"
 import { State, Mutation, Action } from 'vuex-class';
 
 import { Player } from "schemas/player"
 import { Players } from "schemas/players"
-import { CreatePlayer } from "./store"
+import { CreatePlayer, ImportPlayers } from "./store"
 
 import COUNTRIES from "country-json/src/country-by-abbreviation.json"
 
@@ -147,10 +159,16 @@ const FileSaver = require("file-saver");
 export default class App extends Vue {
   @State("players") playersState!: Players
   @Mutation createPlayer!: CreatePlayer
+  @Mutation importPlayers!: ImportPlayers
+  @Ref("inputUpload") readonly inputUpload!: HTMLInputElement
 
   search: string = ""
   valid: boolean = true
-  dialog: boolean = false
+  registerDialog: boolean = false
+  snackbar: boolean = false
+
+  snackbarText: string = ""
+  snackbarColor: string = ""
 
   readonly defaultPlayer: Player = {
     id: -1,
@@ -167,8 +185,44 @@ export default class App extends Vue {
 
   readonly countries: Array<{country: string, abbreviation: string}> = COUNTRIES
 
-  importPlayers(): void {
-    console.log("Import")
+  created(): void {
+    this.$root.$on("playerWasDeleted", () => {
+      this.createSnackbar("Player successfully deleted.")
+    })
+  }
+
+  createSnackbar(text: string, color?: string) {
+    this.snackbarColor = color ? color : ""
+    this.snackbarText = text
+    this.snackbar = true
+  }
+
+  uploadPlayersJson(): void {
+    this.inputUpload.click()
+  }
+
+  importPlayersCallback(file: File): void {
+    const fileReader = new FileReader();
+
+    fileReader.onload = (event) => {
+      fileReader.abort()
+
+      try {
+        let players = JSON.parse(event!.target!.result!.toString())!
+        this.importPlayers(players)
+        this.createSnackbar("Successfully imported players.")
+      } catch (e) {
+        this.createSnackbar("Error occured while parsing players.", "error")
+        console.error(e)
+      }
+    }
+
+    fileReader.onerror = (event) => {
+      this.createSnackbar("Error occured while importing players.", "error")
+    }
+
+    fileReader.readAsText(file)
+    this.inputUpload.value = ""
   }
 
   exportPlayers(): void {
@@ -177,7 +231,7 @@ export default class App extends Vue {
   }
 
   readonly dropdownItems: Array<{title: string, event: Function}> = [
-    { title: "Import players", event: this.importPlayers },
+    { title: "Import players", event: this.uploadPlayersJson },
     { title: "Export players", event: this.exportPlayers },
   ]
 
@@ -202,9 +256,10 @@ export default class App extends Vue {
     this.localPlayer = clone(this.defaultPlayer)
   }
 
-  createDialog(): void {
-    this.dialog = false
+  submitRegisterPlayer(): void {
+    this.registerDialog = false
     this.createPlayer(this.localPlayer)
+    this.createSnackbar("Successfully registered player.")
   }
 
   get players(): Players {
