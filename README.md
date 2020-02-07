@@ -8,19 +8,26 @@
 ## Table of Contents
 * [1&nbsp;&nbsp;Features](#features)
 * [2&nbsp;&nbsp;Installation](#installation)
+* [2&nbsp;&nbsp;Building](#building)
 * [3&nbsp;&nbsp;Meta](#meta)
   * [3.1&nbsp;&nbsp;License](#license)
   * [3.2&nbsp;&nbsp;Built With](#built-with)
   * [3.3&nbsp;&nbsp;Acknowledgments](#acknowledgements)
 
 ## Features
-  * Easy-to-use interface
-  * Beautiful overlays
+  * Easy-to-use web interface
+  * Animated scoreboard overlay
   * Persistant player database
   * Player import and export via JSON
-  * smash.gg integration (soon!)
+
+## Planned Features
+  * smash.gg integration
 
 ## Installation
+Please check the [releases](https://github.com/opeik/runback/releases) tab for
+the latest version of Runback.
+
+## Building
 Ensure Node, npm, and yarn are installed.
 
 Clone and build the repo:
@@ -44,7 +51,6 @@ file for details.
 * NodeCG
 * Vue
 * Vuetify
-* Typescript
 
 ### Acknowledgments
 * Inspired by [ssbutw](https://github.com/crs38c28/ssbutw)
