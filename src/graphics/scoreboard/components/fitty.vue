@@ -2,36 +2,27 @@
   <span class="fit"><slot></slot></span>
 </template>
 
-<script>
-import fitty from "fitty";
+<script lang="ts">
+import "reflect-metadata"
+import { Vue, Component, Prop, Provide } from "vue-property-decorator"
 
-export default {
-  name: "FitText",
-  props: {
-    options: {
-      type: Object,
-      required: false,
-      default() {
-        return {
-          minSize: 16,
-          maxSize: 512,
-          multiLine: false
-        };
-      }
-    }
-  },
-  data() {
-    return {
-      $_fitty: undefined
-    };
-  },
+import fitty from "fitty"
+
+@Component
+export default class Fitty extends Vue {
+  @Prop({default: {minSize: 16, maxSize: 512, multiLine: false}}) options!:
+    {minSize: number, maxSize: number, multiLine: boolean}
+
+  _fitty: any
+
   destroyed() {
-    this.$_fitty.unsubscribe();
-  },
-  mounted() {
-    this.$_fitty = fitty(this.$el, this.options);
+    this._fitty.unsubscribe()
   }
-};
+
+  mounted() {
+    this._fitty = fitty(this.$el! as HTMLElement, this.options!)
+  }
+}
 </script>
 
 <style scoped>
