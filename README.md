@@ -7,7 +7,7 @@
 
 ## Table of Contents
 * [1&nbsp;&nbsp;Features](#features)
-* [2&nbsp;&nbsp;Installation](#installation)
+* [2&nbsp;&nbsp;Installing](#installing)
 * [2&nbsp;&nbsp;Building](#building)
 * [3&nbsp;&nbsp;Meta](#meta)
   * [3.1&nbsp;&nbsp;License](#license)
@@ -23,9 +23,9 @@
 ## Planned Features
   * smash.gg integration
 
-## Installation
+## Installing
 Please check the [releases](https://github.com/opeik/runback/releases) tab for
-the latest version of Runback.
+the latest release of Runback.
 
 ## Building
 *Ensure node, npm, and yarn are installed.*
@@ -38,7 +38,7 @@ Build runback:
 ```
 $ yarn build
 ```
-Start the server runback:
+Start the runback server:
 ```
 $ yarn start
 ```
