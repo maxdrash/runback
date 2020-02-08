@@ -23,5 +23,12 @@
     { "text": "Winners — Losers", "value": 1 },
     { "text": "Losers — Winners", "value": 2 },
     { "text": "Losers — Losers (Reset)", "value": 3 }
+  ],
+  "winnersText": "W",
+  "losersText": "L",
+  "finalsIsWinner": [
+    { "p1": true, "p2": false },
+    { "p1": false, "p2": true },
+    { "p1": false, "p2": false }
   ]
 }

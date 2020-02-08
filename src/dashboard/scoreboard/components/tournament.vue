@@ -17,17 +17,17 @@
           label="Bracket side"
           item-text="text"
           item-value="value"
-          :disabled="!shouldDisableFinals"
+          :disabled="!shouldDisableFinal"
           required
           ></v-autocomplete>
 
           <v-autocomplete
             :items="finalsList"
             v-model="finals"
-            label="Grand Finals progress"
+            label="Grand Final progress"
             item-text="text"
             item-value="value"
-            :disabled="shouldDisableFinals"
+            :disabled="shouldDisableFinal"
             required
             ></v-autocomplete>
       <v-row class="my-n6">
@@ -122,7 +122,7 @@ export default class Tournament extends Vue {
     this.setShouldOverrideProgress(shouldOverrideProgress)
   }
 
-  get shouldDisableFinals() {
+  get shouldDisableFinal() {
     const grandFinals: number = 13
 
     return this.progress !== grandFinals

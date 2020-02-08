@@ -52,6 +52,32 @@
         </fitty>
       </div>
 
+      <div id="p1-side-wrapper" class="side-wrapper"
+        :class="[entering.side && isGrandFinals ? 'p1-side-in' : '',
+                 entering.main || !isGrandFinals ? 'p1-side-initial' : '',
+                 updating.side ? 'p1-side-out' : '']"
+      >
+        <img :src="p1SidePanelPath">
+          <div id="p1-side-text" class="side-text-wrapper">
+            <span>
+              {{ local.p1.side }}
+            </span>
+          </div>
+      </div>
+
+      <div id="p2-side-wrapper" class="side-wrapper"
+        :class="[entering.side && isGrandFinals ? 'p2-side-in' : '',
+                 entering.main || !isGrandFinals ? 'p2-side-initial' : '',
+                 updating.side ? 'p2-side-out' : '']"
+      >
+        <img :src="p2SidePanelPath">
+          <div id="p2-side-text" class="side-text-wrapper">
+            <span>
+              {{ local.p2.side }}
+            </span>
+          </div>
+      </div>
+
       <div id="p1-name-wrapper"
         class="name-wrapper"
         :class="[entering.players ? 'p1-name-in' : '',
@@ -153,6 +179,7 @@ export default class App extends Vue {
       team: "" as string,
       games: 0 as number,
       country: "" as string,
+      side: "" as string,
     },
 
     p2: {
@@ -160,6 +187,7 @@ export default class App extends Vue {
       team: "" as string,
       games: 0 as number,
       country: "" as string,
+      side: "" as string,
     }
   }
 
@@ -169,6 +197,7 @@ export default class App extends Vue {
     progress: false as boolean,
     p1Games: false as boolean,
     p2Games: false as boolean,
+    side: false as boolean,
   }
 
   updating = {
@@ -176,6 +205,7 @@ export default class App extends Vue {
     players: false as boolean,
     p1Games: false as boolean,
     p2Games: false as boolean,
+    side: false as boolean,
   }
 
   updateQueue = []
@@ -189,7 +219,13 @@ export default class App extends Vue {
 
   readonly progressList: Array<{text: string, value: number}> = BRACKET_RULES.progressList
   readonly sideList: Array<{text: string, value: number}> = BRACKET_RULES.sideList
+  readonly sideAbbreviation: Array<{p1: string, p2: string}> = BRACKET_RULES.sideAbbreviation
   readonly finalsList: Array<{text: string, value: number}> = BRACKET_RULES.finalsList
+  readonly finalsIsWinner: Array<{p1: boolean, p2: boolean}> = BRACKET_RULES.finalsIsWinner
+
+  readonly winnersText: string = BRACKET_RULES.winnersText
+  readonly losersText: string = BRACKET_RULES.losersText
+  readonly grandFinals: number = 13
 
   get players(): Players {
     return this.playersState
@@ -219,14 +255,21 @@ export default class App extends Vue {
       this.players[this.scoreboard[playerIndex].playerId].team
   }
 
+  sideWrapper(playerIndex: number): string {
+    let isWinner = playerIndex === 0 ?
+      this.finalsIsWinner[this.bracket.finals - 1].p1 :
+      this.finalsIsWinner[this.bracket.finals - 1].p2
+
+    return isWinner ? this.winnersText : this.losersText
+  }
+
   progressWrapper(): string {
-    const grandFinals: number = 13
-    const noSide: number = 1
+    const noneSide: number = 1
     let progress: string = ""
 
     if (this.bracket.shouldOverrideProgress)
       progress = this.bracket.customProgress
-    else if (this.bracket.progress === grandFinals || this.bracket.side === noSide) {
+    else if (this.bracket.progress === this.grandFinals || this.bracket.side === noneSide) {
         progress = this.progressList[this.bracket.progress - 1].text
     } else {
       progress = this.sideList[this.bracket.side - 1].text + " " +
@@ -245,6 +288,23 @@ export default class App extends Vue {
   flagPath(country: string): string {
     return require("@/../node_modules/region-flags/svg/" +
       country.toUpperCase() + ".svg")
+  }
+
+  sidePanelPath(playerIndex: number): string {
+    let base: string = "./img/side" + (playerIndex + 1) + "-"
+    let isWinner: boolean =
+      (playerIndex === 0 ? this.local.p1.side : this.local.p2.side) === this.winnersText
+    base += isWinner ? "winners" : "losers"
+
+    return require(base + ".svg")
+  }
+
+  get p1SidePanelPath(): string {
+    return this.sidePanelPath(0)
+  }
+
+  get p2SidePanelPath(): string {
+    return this.sidePanelPath(1)
   }
 
   containsCjkCharacters(s: string): boolean {
@@ -275,7 +335,6 @@ export default class App extends Vue {
     return this.nameFontSize(1)
   }
 
-
   created(): void {
     this.local.p1.gamerTag = this.p1GamerTag
     this.local.p1.team = this.p1Team
@@ -287,6 +346,9 @@ export default class App extends Vue {
     this.local.p2.games = this.p2Games
     this.local.p2.country = this.p2Country
 
+    this.local.p1.side = this.p1Side
+    this.local.p2.side = this.p2Side
+
     this.local.progress = this.progress
   }
 
@@ -295,6 +357,7 @@ export default class App extends Vue {
       if ((event as AnimationEvent)!.animationName === "ani-main-panel-in") {
         this.entering.main = false
         this.entering.players = true
+        this.entering.side = true
       }
     }},
     {id: "#p1-name-wrapper", c: EventCallback => {
@@ -340,6 +403,20 @@ export default class App extends Vue {
         this.local.progress = this.progress
       }
     }},
+    {id: "#p1-side-wrapper", c: EventCallback => {
+      if ((event as AnimationEvent)!.animationName === "ani-p1-side-in") {
+        this.entering.side = false
+      } else if ((event as AnimationEvent)!.animationName === "ani-p1-side-out") {
+        this.updating.side = false
+
+        if (this.isGrandFinals) {
+          this.entering.side = true
+        }
+
+        this.local.p1.side = this.p1Side
+        this.local.p2.side = this.p2Side
+      }
+    }},
   ]
 
   setupAnimationEndEvents(): void {
@@ -356,13 +433,49 @@ export default class App extends Vue {
     return this.progressWrapper()
   }
 
+  isGrandFinalsWrapper(): boolean {
+    return this.bracket.progress === this.grandFinals
+  }
+
+  get isGrandFinals(): boolean {
+    return this.isGrandFinalsWrapper()
+  }
+
   @Watch("progress")
   progressWatch(newValue: string, oldValue: string): void {
+    if (this.isGrandFinals) {
+      this.entering.side = true
+    } else if (oldValue === this.progressList[this.grandFinals - 1].text) {
+      this.updating.side = true
+    }
+
     this.updating.progress = true
   }
 
   get p1GamerTag(): string {
     return this.gamerTag(0)
+  }
+
+  get p1Side(): string {
+    return this.sideWrapper(0)
+  }
+
+  @Watch("p1Side")
+  p1SideWatch(newValue: string, oldValue: string): void {
+    if (this.bracket.progress === this.grandFinals) {
+      this.updating.side = true
+    }
+  }
+
+  get p2Side(): string {
+    return this.sideWrapper(1)
+  }
+
+  @Watch("p2Side")
+  p2SideWatch(newValue: string, oldValue: string): void {
+    if (this.bracket.progress === this.grandFinals) {
+      this.updating.side = true
+    }
   }
 
   @Watch("p1GamerTag")
@@ -451,6 +564,15 @@ export default class App extends Vue {
   --name-panel-p2-mask-start: polygon(85% 0, 100% 0, 100% 100%, 85% 100%);
   --name-panel-mask-end: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 
+  --side-panel-height: 25px;
+  --side-panel-width: 36px;
+  --side-panel-offset-x: 1px;
+  --side-text-height: var(--side-panel-height);
+  --side-text-width: calc(var(--side-panel-width) * 0.5);
+  --side-text-offset-x: calc(var(--side-text-width) * 0.425);
+  --side-start-x: var(--side-panel-offset-x);
+  --side-end-x: calc(var(--side-panel-width) * 0.75 * -1);
+
   --flag-height: 50px;
   --flag-width: 120px;
   --flag-start-x: calc(var(--flag-width) + 1px);
@@ -469,7 +591,7 @@ export default class App extends Vue {
   --progress-text-width: calc(var(--main-panel-width) * 0.65);
   --progress-text-height: calc(var(--main-panel-height) * 0.55);
   --progress-text-offset-x: calc(var(--main-panel-width) * 0.5);
-  --progress-text-offset-y: calc(var(--main-panel-height) * 0.375 - (var(--progress-text-height) * 0.5) );
+  --progress-text-offset-y: calc(var(--main-panel-height) * 0.35 - (var(--progress-text-height) * 0.5) );
 
   --text-in-duration: 0.25s;
   --text-out-duration: 0.25s;
@@ -481,6 +603,8 @@ export default class App extends Vue {
   --flag-in-duration: 0.75s;
   --flag-in-delay: 0.25s;
   --flag-out-duration: 0.3s;
+  --side-in-duration: 0.5s;
+  --side-out-duration: 0.5s;
 
   --animation-curve: cubic-bezier(0.19, 1, 0.22, 1);
   --text-curve: linear;
@@ -575,8 +699,32 @@ img {
   right: var(--games-text-offset-x);
 }
 
+#p1-side-wrapper {
+  left: var(--side-end-x);
+}
+
+#p2-side-wrapper {
+  right: var(--side-end-x);
+}
+
+#p1-side-text {
+  left: var(--side-text-offset-x);
+}
+
+#p2-side-text {
+  right: var(--side-text-offset-x);
+}
+
 .hidden {
   opacity: 0;
+}
+
+.p1-side-initial {
+  left: var(--side-start-x) !important;
+}
+
+.p2-side-initial {
+  right: var(--side-start-x) !important;
 }
 
 .main-initial {
@@ -599,7 +747,26 @@ img {
   clip-path: var(--name-panel-p2-mask-start);
 }
 
-.p2-flag-initial {
+.side-wrapper {
+  position: absolute;
+  height: var(--side-panel-height);
+  width: var(--side-panel-width);
+  top: 0;
+  z-index: -1;
+  overflow: visible;
+  filter: drop-shadow(0px 2px 5px #222);
+}
+
+.side-text-wrapper {
+  position: absolute;
+  height: var(--side-text-height);
+  width: var(--side-text-width);
+  top: 0;
+  font-family: "Bebas Neue Bold";
+  text-align: center;
+  line-height: var(--side-panel-height);
+  font-size: 25px;
+  color: black;
 }
 
 .name-wrapper {
@@ -656,7 +823,7 @@ img {
 }
 
 .team-text {
-  color: gray;
+  color: #a5a5a5;
 }
 
 .gamertag-text {
@@ -723,6 +890,26 @@ img {
 
 .p2-flag-out {
   animation: ani-p2-flag-out var(--flag-out-duration) forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.p1-side-in {
+  animation: ani-p1-side-in var(--side-in-duration) forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.p2-side-in {
+  animation: ani-p2-side-in var(--side-in-duration) forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.p1-side-out {
+  animation: ani-p1-side-out var(--side-out-duration) forwards;
+  animation-timing-function: var(--animation-curve);
+}
+
+.p2-side-out {
+  animation: ani-p2-side-out var(--side-out-duration) forwards;
   animation-timing-function: var(--animation-curve);
 }
 
@@ -830,6 +1017,43 @@ img {
   }
   100% {
     right: var(--flag-start-x);
+  }
+}
+
+@keyframes ani-p1-side-in {
+  0% {
+    left: var(--side-start-x);
+  }
+  100% {
+    left: var(--side-end-x);
+  }
+}
+
+@keyframes ani-p1-side-out {
+  0% {
+    left: var(--side-end-x);
+  }
+  100% {
+    left: var(--side-start-x);
+  }
+}
+
+
+@keyframes ani-p2-side-in {
+  0% {
+    right: var(--side-start-x);
+  }
+  100% {
+    right: var(--side-end-x);
+  }
+}
+
+@keyframes ani-p2-side-out {
+  0% {
+    right: var(--side-end-x);
+  }
+  100% {
+    right: var(--side-start-x);
   }
 }
 
