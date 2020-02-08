@@ -86,7 +86,9 @@
         >
         <img src="./img/name1.svg">
 
-        <div id="p1-name-text-wrapper" class="name-text-wrapper">
+        <div id="p1-name-text-wrapper" class="name-text-wrapper"
+          :class="isGrandFinals ? 'name-text-small' : ''"
+        >
           <fitty
             :options="{minSize: 1, maxSize: p1NameFontSize, multiLine: false}"
           >
@@ -121,8 +123,9 @@
         >
         <img src="./img/name2.svg">
 
-        <div id="p2-name-text-wrapper" class="name-text-wrapper">
-
+        <div id="p2-name-text-wrapper" class="name-text-wrapper"
+          :class="isGrandFinals ? 'name-text-small' : ''"
+        >
           <fitty
             :options="{minSize: 1, maxSize: p2NameFontSize, multiLine: false}"
           >
@@ -578,9 +581,9 @@ export default class App extends Vue {
   --flag-start-x: calc(var(--flag-width) + 1px);
   --flag-end-x: calc(var(--flag-width) * (0.25 + 0.01));
 
-  --name-text-width: calc(var(--name-panel-width) * 0.825);
+  --name-text-width: calc(var(--name-panel-width) * 0.845);
   --name-text-height: calc(var(--name-panel-height) * 0.8);
-  --name-text-offset-x: calc(var(--name-panel-width) * 0.075);
+  --name-text-offset-x: calc(var(--name-panel-width) * 0.325);
   --name-text-offset-y: calc(var(--name-panel-height) * 0.5 - (var(--name-text-height) * 0.5) );
 
   --games-text-width: calc(var(--main-panel-width) * 0.11);
@@ -682,12 +685,12 @@ img {
 }
 
 #p1-name-text-wrapper {
-  right: var(--name-text-offset-x);
+  left: var(--name-text-offset-x);
   text-align: left;
 }
 
 #p2-name-text-wrapper {
-  left: var(--name-text-offset-x);
+  right: var(--name-text-offset-x);
   text-align: right;
 }
 
@@ -805,6 +808,10 @@ img {
   width: var(--name-text-width);
   line-height: var(--name-text-height);
   font-family: "Bebas Neue Bold", "Rounded Mplus Bold";
+}
+
+.name-text-small {
+  width: calc(var(--name-text-width) * 0.925) !important;
 }
 
 .games-text-wrapper {
