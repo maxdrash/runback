@@ -30,7 +30,7 @@
     <v-container>
       <v-autocomplete
         v-model="playerId"
-        :items="validPlayers"
+        :items="filterPlayers"
         item-text="gamerTag"
         item-value="id"
         label="Player"
@@ -128,6 +128,7 @@ import "reflect-metadata"
 import { Vue, Component, Prop, Provide, Ref } from "vue-property-decorator"
 import { State, Mutation, Action } from 'vuex-class';
 
+import { Player } from "schemas/player"
 import { Players } from "schemas/players"
 import { Scoreboard } from "schemas/scoreboard"
 import { Score } from "schemas/score"
@@ -192,6 +193,16 @@ export default class ScoreboardColumn extends Vue {
 
   clearForm(): void {
     this.localScore = clone(this.scoreboard[this.playerIndex])
+  }
+
+  get filterPlayers(): Players {
+    function displayName(p: Player): string {
+      return p.team ? p.team + " | " + p.gamerTag : p.gamerTag
+    }
+
+    return this.players.filter(i => i.isActive ).sort((a, b) =>
+      displayName(a).localeCompare(displayName(b))
+    )
   }
 
   get players(): Players {

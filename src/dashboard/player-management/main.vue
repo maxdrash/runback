@@ -226,7 +226,9 @@ export default class App extends Vue {
   }
 
   exportPlayers(): void {
-    const blob = new Blob([JSON.stringify(this.players)], {type: "text/plain;charset=utf-8"});
+    const blob = new Blob([JSON.stringify(this.players.filter(i => i.isActive ))],
+      {type: "text/plain;charset=utf-8"});
+
     FileSaver.saveAs(blob, "runback-exported-players.json");
     this.createSnackbar("Players successfully exported.")
   }
