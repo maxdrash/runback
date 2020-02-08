@@ -28,18 +28,19 @@ Please check the [releases](https://github.com/opeik/runback/releases) tab for
 the latest version of Runback.
 
 ## Building
-Ensure Node, npm, and yarn are installed.
+*Ensure node, npm, and yarn are installed.*
 
-Clone and build the repo:
+Clone runback:
 ```
-$ git clone https://github.com/opeik/nodecg.git
-$ cd nodecg && npm install --production && cd bundles
-$ git clone https://github.com/opeik/runback.git
-$ cd runback && yarn install && yarn build
+$ curl -sSf https://git.io/JvnMt | bash
 ```
-Start the NodeCG server:
+Build runback:
 ```
-$ cd ../.. && node index.js
+$ yarn build
+```
+Start the server runback:
+```
+$ yarn start
 ```
 
 ## Meta
