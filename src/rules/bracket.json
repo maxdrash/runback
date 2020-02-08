@@ -1,7 +1,8 @@
 {
   "sideList": [
-    { "text": "Winners", "value": 1 },
-    { "text": "Losers", "value": 2 }
+    { "text": "None", "value": 1 },
+    { "text": "Winners", "value": 2 },
+    { "text": "Losers", "value": 3 }
   ],
   "progressList": [
     { "text": "Pools", "value": 1 },
@@ -13,10 +14,10 @@
     { "text": "Top 16", "value": 7 },
     { "text": "Top 8", "value": 8 },
     { "text": "Top 4", "value": 9 },
-    { "text": "Quarter-Finals", "value": 10 },
-    { "text": "Semi-Finals", "value": 11 },
-    { "text": "Finals", "value": 12 },
-    { "text": "Grand Finals", "value": 13 }
+    { "text": "Quarter-Final", "value": 10 },
+    { "text": "Semi-Final", "value": 11 },
+    { "text": "Final", "value": 12 },
+    { "text": "Grand Final", "value": 13 }
   ],
   "finalsList": [
     { "text": "Winners — Losers", "value": 1 },

@@ -220,9 +220,20 @@ export default class App extends Vue {
   }
 
   progressWrapper(): string {
-    return this.bracket.shouldOverrideProgress ?
-      this.bracket.customProgress :
-      this.progressList[this.bracket.progress - 1].text
+    const grandFinals: number = 13
+    const noSide: number = 1
+    let progress: string = ""
+
+    if (this.bracket.shouldOverrideProgress)
+      progress = this.bracket.customProgress
+    else if (this.bracket.progress === grandFinals || this.bracket.side === noSide) {
+        progress = this.progressList[this.bracket.progress - 1].text
+    } else {
+      progress = this.sideList[this.bracket.side - 1].text + " " +
+        this.progressList[this.bracket.progress - 1].text
+    }
+
+    return progress
   }
 
   country(playerIndex: number): string {
