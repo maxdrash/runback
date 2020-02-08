@@ -213,7 +213,7 @@ export default class App extends Vue {
 
   updateQueue = []
 
-  readonly cjkFontSizeRatio = 0.85
+  readonly cjkFontSizeRatio = 0.80
 
   fontSizes =  {
     name: 45,
