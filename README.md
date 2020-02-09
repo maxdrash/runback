@@ -38,7 +38,11 @@ Build runback:
 ```
 $ yarn build
 ```
-Start the runback server:
+Or, if you want to rebuild as you make changes:
+```
+$ yarn watch
+```
+Finally, start the runback server:
 ```
 $ yarn start
 ```
