@@ -15,6 +15,11 @@ export default class Fitty extends Vue {
 
   _fitty: any
 
+  fit() {
+    console.log("Fitted")
+    this._fitty.fit()
+  }
+
   destroyed() {
     this._fitty.unsubscribe()
   }

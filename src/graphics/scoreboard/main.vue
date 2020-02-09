@@ -89,7 +89,7 @@
         <div id="p1-name-text-wrapper" class="name-text-wrapper"
           :class="isGrandFinals ? 'name-text-small' : ''"
         >
-          <fitty
+          <fitty ref="p1NameFitty"
             :options="{minSize: 1, maxSize: p1NameFontSize, multiLine: false}"
           >
             <span class="team-text">
@@ -126,7 +126,7 @@
         <div id="p2-name-text-wrapper" class="name-text-wrapper"
           :class="isGrandFinals ? 'name-text-small' : ''"
         >
-          <fitty
+          <fitty ref="p2NameFitty"
             :options="{minSize: 1, maxSize: p2NameFontSize, multiLine: false}"
           >
             <span class="team-text">
@@ -158,11 +158,12 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component, Watch, Ref } from 'vue-property-decorator'
 import { State } from 'vuex-class'
 import { Players } from "schemas/players"
 import { Scoreboard } from "schemas/scoreboard"
 import { Bracket } from "schemas/bracket"
+import Fitty from "./components/fitty.vue"
 
 const BRACKET_RULES = require("@/rules/bracket.json")
 
@@ -173,6 +174,8 @@ export default class App extends Vue {
   @State("players") playersState!: Players
   @State("scoreboard") scoreboardState!: Scoreboard
   @State("bracket") bracketState!: Bracket
+  @Ref("p1NameFitty") p1NameFitty!: Fitty
+  @Ref("p2NameFitty") p2NameFitty!: Fitty
 
   local = {
     progress: "" as string,
@@ -338,6 +341,11 @@ export default class App extends Vue {
     return this.nameFontSize(1)
   }
 
+  refitNameText(): void {
+    this.p1NameFitty.fit()
+    this.p2NameFitty.fit()
+  }
+
   created(): void {
     this.local.p1.gamerTag = this.p1GamerTag
     this.local.p1.team = this.p1Team
@@ -353,6 +361,7 @@ export default class App extends Vue {
     this.local.p2.side = this.p2Side
 
     this.local.progress = this.progress
+
   }
 
   readonly animationEndEvents: Array<{id: string, c: EventCallback}> = [
@@ -361,6 +370,7 @@ export default class App extends Vue {
         this.entering.main = false
         this.entering.players = true
         this.entering.side = true
+        this.refitNameText()
       }
     }},
     {id: "#p1-name-wrapper", c: EventCallback => {
@@ -377,6 +387,7 @@ export default class App extends Vue {
 
         this.updating.players = false
         this.entering.players = true
+        this.refitNameText()
       }
     }},
     {id: "#p1-games-text-wrapper", c: EventCallback => {
@@ -430,6 +441,7 @@ export default class App extends Vue {
 
   mounted(): void {
     this.setupAnimationEndEvents()
+    this.refitNameText()
   }
 
   get progress() : string {
@@ -448,8 +460,10 @@ export default class App extends Vue {
   progressWatch(newValue: string, oldValue: string): void {
     if (this.isGrandFinals) {
       this.entering.side = true
+      this.refitNameText()
     } else if (oldValue === this.progressList[this.grandFinals - 1].text) {
       this.updating.side = true
+      this.refitNameText()
     }
 
     this.updating.progress = true
@@ -567,14 +581,12 @@ export default class App extends Vue {
   --name-panel-p2-mask-start: polygon(85% 0, 100% 0, 100% 100%, 85% 100%);
   --name-panel-mask-end: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 
-  --side-panel-height: 25px;
-  --side-panel-width: 36px;
-  --side-panel-offset-x: 1px;
+  --side-panel-height: calc(var(--main-panel-height) * 0.5);
+  --side-panel-width: 43px;
   --side-text-height: var(--side-panel-height);
-  --side-text-width: calc(var(--side-panel-width) * 0.5);
-  --side-text-offset-x: calc(var(--side-text-width) * 0.425);
-  --side-start-x: var(--side-panel-offset-x);
-  --side-end-x: calc(var(--side-panel-width) * 0.75 * -1);
+  --side-text-width: var(--side-panel-width);
+  --side-start-x: 1px;
+  --side-end-x: calc(var(--side-panel-width) * 0.8 * -1);
 
   --flag-height: 50px;
   --flag-width: 120px;
@@ -710,14 +722,6 @@ img {
   right: var(--side-end-x);
 }
 
-#p1-side-text {
-  left: var(--side-text-offset-x);
-}
-
-#p2-side-text {
-  right: var(--side-text-offset-x);
-}
-
 .hidden {
   opacity: 0;
 }
@@ -768,7 +772,7 @@ img {
   font-family: "Bebas Neue Bold";
   text-align: center;
   line-height: var(--side-panel-height);
-  font-size: 25px;
+  font-size: 30px;
   color: black;
 }
 
@@ -811,7 +815,7 @@ img {
 }
 
 .name-text-small {
-  width: calc(var(--name-text-width) * 0.925) !important;
+  width: calc(var(--name-text-width) - (var(--side-panel-width) * 0.85)) !important;
 }
 
 .games-text-wrapper {
