@@ -32,7 +32,7 @@ the latest release of Runback.
 
 Clone runback:
 ```
-$ curl -sSf https://git.io/JvnMt | bash
+$ eval "$(curl -sSfL https://git.io/JvcwE)"
 ```
 Build runback:
 ```
